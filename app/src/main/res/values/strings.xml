@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MVVM</string>
+    <string name="app_name">Weather Forecast</string>
     <string name="prev">Prev</string>
     <string name="next">Next</string>
     <string name="Title">Title:</string>
@@ -10,6 +10,5 @@
     <string name="addToFavs">Add To Fav</string>
     <string name="Favs">Favourites</string>
     <string name="allProducts">All Products</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

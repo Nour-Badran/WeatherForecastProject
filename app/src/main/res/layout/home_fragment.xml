@@ -3,60 +3,61 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    android:layout_height="match_parent">
 
     <!-- Current Weather Section -->
     <TextView
         android:id="@+id/tv_city_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="City Name"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/weather_icon"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_city_name"
+        android:layout_marginTop="56dp"
+        android:contentDescription="Weather icon"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="8dp"
-        android:contentDescription="Weather icon" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:text="21°C"
         android:textSize="48sp"
-        app:layout_constraintStart_toEndOf="@id/weather_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/weather_icon" />
 
     <TextView
         android:id="@+id/tv_weather_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Clear Sky"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/tv_temperature"
-        app:layout_constraintStart_toStartOf="@id/tv_temperature"
-        android:layout_marginTop="8dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_temperature" />
 
     <!-- Weather Details Section -->
     <LinearLayout
         android:id="@+id/weather_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_weather_description"
-        android:layout_marginTop="16dp">
+        app:layout_constraintTop_toBottomOf="@id/tv_weather_description">
 
         <TextView
             android:id="@+id/tv_humidity"

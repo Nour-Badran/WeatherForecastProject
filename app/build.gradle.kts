@@ -50,6 +50,7 @@ dependencies {
     implementation ("androidx.room:room-runtime:2.6.1")
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.fragment)
+    implementation(libs.play.services.location)
     kapt ("androidx.room:room-compiler:2.6.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
