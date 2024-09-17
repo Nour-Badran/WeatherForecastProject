@@ -28,7 +28,8 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         humidity = humidity,
         windSpeed = windSpeed,
         pressure = pressure,
-        clouds = clouds
+        clouds = clouds,
+        iconResId = iconResId
     )
 
     private fun Forecast.toEntity() = ForecastEntity(
@@ -44,6 +45,7 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         windSpeed = windSpeed,
         pressure = pressure,
         clouds = clouds,
+        iconResId = iconResId, // Use the stored iconResId from WeatherEntity
         forecast = emptyList() // Handle forecast conversion if needed
     )
 

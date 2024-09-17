@@ -1,5 +1,7 @@
 package com.example.mvvm.model
 
+import com.google.gson.annotations.SerializedName
+
 data class WeatherData(
     val cityName: String,
     val temperature: Double,
@@ -8,17 +10,19 @@ data class WeatherData(
     val windSpeed: Double,
     val pressure: Int,
     val clouds: Int,
-    val forecast: List<Forecast>
+    val forecast: List<Forecast>,
+    val iconResId : Int
 )
 
 data class WeatherApiResponse(
-    val city: City?,
-    val main: Main?,
-    val weather: List<Weather>?,
-    val wind: Wind?,
-    val clouds: Clouds?,
-    val forecast: List<Forecast>?
+    @SerializedName("name") val cityName: String?,  // Note that the city name is not nested
+    @SerializedName("main") val main: Main?,
+    @SerializedName("weather") val weather: List<Weather>?,
+    @SerializedName("wind") val wind: Wind?,
+    @SerializedName("clouds") val clouds: Clouds?,
+    @SerializedName("list") val forecast: List<Forecast>?
 )
+
 
 data class City(val name: String)
 data class Main(val temp: Double, val humidity: Int, val pressure: Int)

@@ -1,5 +1,6 @@
 package com.example.mvvm.network
 
+import com.example.mvvm.R
 import com.example.mvvm.model.WeatherApiResponse
 import com.example.mvvm.model.WeatherData
 import retrofit2.Retrofit
@@ -33,14 +34,27 @@ class WeatherRemoteDataSource {
 
     private fun mapToWeatherData(apiResponse: WeatherApiResponse): WeatherData {
         return WeatherData(
-            cityName = apiResponse.city?.name ?: "",
+            cityName = apiResponse.cityName ?: "",  // Map the root-level city name
             temperature = apiResponse.main?.temp ?: 0.0,
             description = apiResponse.weather?.firstOrNull()?.description ?: "",
             humidity = apiResponse.main?.humidity ?: 0,
             windSpeed = apiResponse.wind?.speed ?: 0.0,
             pressure = apiResponse.main?.pressure ?: 0,
             clouds = apiResponse.clouds?.all ?: 0,
+            iconResId = mapToWeatherIcon(apiResponse.weather?.firstOrNull()?.description ?: ""),
             forecast = apiResponse.forecast ?: emptyList()
         )
+    }
+
+    private fun mapToWeatherIcon(description: String): Int {
+        return when {
+            description.contains("clear", ignoreCase = true) -> R.drawable.sun
+            description.contains("clouds", ignoreCase = true) -> R.drawable.cloudyday
+            description.contains("rain", ignoreCase = true) -> R.drawable.rainyday
+            description.contains("thunderstorm", ignoreCase = true) -> R.drawable.thunderstorms
+            description.contains("snow", ignoreCase = true) -> R.drawable.snow
+            description.contains("mist", ignoreCase = true) -> R.drawable.fog
+            else -> R.drawable.sun // Default weather icon
+        }
     }
 }

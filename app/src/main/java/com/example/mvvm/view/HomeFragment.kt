@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -73,6 +74,9 @@ class HomeFragment : Fragment() {
                     "Pressure: ${weather.pressure} hPa"
                 view?.findViewById<TextView>(R.id.tv_clouds)?.text = "Clouds: ${weather.clouds}%"
 
+                val weatherIconView = view?.findViewById<ImageView>(R.id.weather_icon)
+                weatherIconView?.setImageResource(weather.iconResId)
+
                 forecastAdapter.submitList(weather.forecast)
             }
         }
@@ -129,4 +133,5 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
 }
