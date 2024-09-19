@@ -1,5 +1,6 @@
 package com.example.mvvm.network
 
+import com.example.mvvm.model.FiveDayResponse
 import com.example.mvvm.model.WeatherApiResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -20,4 +21,12 @@ interface WeatherService {
         @Query("lon") lon: Double,
         @Query("units") units: String
     ): Response<WeatherApiResponse>
+
+    @GET("data/2.5/forecast")
+    suspend fun get5DayForecast(
+        @Query("lat") lat: Double,
+        @Query("appid") apiKey: String,
+        @Query("lon") lon: Double,
+        @Query("units") units: String
+    ): Response<FiveDayResponse>
 }

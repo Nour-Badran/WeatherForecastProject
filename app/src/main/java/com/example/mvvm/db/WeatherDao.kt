@@ -12,4 +12,7 @@ interface WeatherDao {
 
     @Query("SELECT * FROM weather LIMIT 1")
     suspend fun getWeatherData(): WeatherEntity?
+
+    @Query("DELETE FROM weather")
+    suspend fun deleteAllWeatherData()
 }

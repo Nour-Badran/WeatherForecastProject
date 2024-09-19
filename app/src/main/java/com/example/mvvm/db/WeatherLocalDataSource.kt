@@ -1,5 +1,6 @@
 package com.example.mvvm.db
 
+import android.util.Log
 import com.example.mvvm.model.Forecast
 import com.example.mvvm.model.WeatherData
 import kotlinx.coroutines.Dispatchers
@@ -9,6 +10,7 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
 
     suspend fun saveWeatherData(weatherData: WeatherData) {
         withContext(Dispatchers.IO) {
+            weatherDao.deleteAllWeatherData()
             weatherDao.insertWeatherData(weatherData.toEntity())
         }
     }
@@ -29,7 +31,10 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         windSpeed = windSpeed,
         pressure = pressure,
         clouds = clouds,
-        iconResId = iconResId
+        dt = dt,
+        visibility =visibility,
+        iconResId = iconResId,
+        icon = icon
     )
 
     private fun Forecast.toEntity() = ForecastEntity(
@@ -45,8 +50,11 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         windSpeed = windSpeed,
         pressure = pressure,
         clouds = clouds,
+        dt = dt,
+        visibility = visibility,
         iconResId = iconResId, // Use the stored iconResId from WeatherEntity
-        forecast = emptyList() // Handle forecast conversion if needed
+        forecast = emptyList() ,
+        icon = icon
     )
 
     private fun ForecastEntity.toModel() = Forecast(

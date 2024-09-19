@@ -10,12 +10,15 @@
         android:id="@+id/weather_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@color/design_default_color_secondary"
+        android:elevation="16dp"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tv_city_name"
@@ -24,6 +27,15 @@
             android:text="City Name"
             android:textSize="24sp"
             android:textStyle="bold" />
+
+        <!-- New TextView for Date -->
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Date"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_temperature"
@@ -75,6 +87,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Clouds: 20%" />
+
+        <TextView
+            android:id="@+id/tv_visibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Visibility: N/A" />
+
     </LinearLayout>
 
     <!-- Forecast Section -->

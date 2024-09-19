@@ -26,6 +26,21 @@ class WeatherRepository(
             localDataSource.getWeatherData()
         }
     }
+    suspend fun getForecast(lat: Double, lon: Double, apiKey: String, units: String): FiveDayResponse? {
+        return if (isConnectedToInternet()) {
+            // Fetch from remote data source
+            val remoteData = remoteDataSource.fetchForecast(lat, lon, apiKey, units)
+//            remoteData?.let {
+//                // Save to local data source for offline use
+//                localDataSource.saveWeatherData(it)
+//            }
+            remoteData
+        } else {
+            // No internet, retrieve from local data source
+            //localDataSource.getWeatherData()
+            return null
+        }
+    }
 
     private fun isConnectedToInternet(): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

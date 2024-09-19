@@ -12,7 +12,10 @@ data class WeatherEntity(
     val windSpeed: Double,
     val pressure: Int,
     val clouds: Int,
-    val iconResId: Int // Add this field to store the icon resource ID
+    val dt: Long,
+    val visibility: Int,
+    val iconResId: Int,
+    val icon: String
 )
 
 @Entity(tableName = "forecast")
