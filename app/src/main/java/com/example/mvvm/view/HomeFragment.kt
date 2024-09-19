@@ -12,10 +12,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.mvvm.viewmodel.HomeViewModel
 import com.example.mvvm.R
+import com.example.mvvm.capitalizeFirstLetter
 import com.example.mvvm.setIcon
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -24,6 +27,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.OnSuccessListener
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -31,18 +35,48 @@ class HomeFragment : Fragment() {
     private lateinit var forecastAdapter: WeatherForecastAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var hourlyAdapter: HourlyForecastAdapter
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.home_fragment, container, false)
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         setupUI(view)
         observeWeatherData()
         observeDaily()
         observeHourly()
         // Fetch location and weather data
+
+        swipeRefreshLayout.setOnRefreshListener {
+            getCurrentLocation { lat, lon ->
+                if (lat != null && lon != null) {
+                    viewModel.fetchForecastData(
+                        lat,
+                        lon,
+                        "477840c0a8b416725948f965ee5450ec",
+                        "metric"
+                    )
+                    viewModel.fetchWeatherData(
+                        lat,
+                        lon,
+                        "477840c0a8b416725948f965ee5450ec",
+                        "metric"
+                    )
+                } else {
+                    Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                swipeRefreshLayout.isRefreshing = false
+            }
+        }
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         getCurrentLocation { lat, lon ->
             if (lat != null && lon != null) {
                 viewModel.fetchForecastData(lat, lon, "477840c0a8b416725948f965ee5450ec", "metric")
@@ -51,10 +85,13 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show()
             }
         }
-
-        return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        observeWeatherData()
+
+    }
     private fun setupUI(view: View) {
         forecastAdapter = WeatherForecastAdapter()
         view.findViewById<RecyclerView>(R.id.rv_daily_forecast).apply {
@@ -68,59 +105,52 @@ class HomeFragment : Fragment() {
         }
     }
     private fun observeDaily() {
-        viewModel.dailyWeather.observe(viewLifecycleOwner) { dailyWeatherList ->
-            if (dailyWeatherList.isNotEmpty()) {
-                // Remove the first item from the list
-                val updatedList = dailyWeatherList.drop(1)
-                forecastAdapter.submitList(updatedList)
+        lifecycleScope.launch {
+            viewModel.dailyWeather.collect { dailyWeatherList ->
+                if (dailyWeatherList.isNotEmpty()) {
+                    val updatedList = dailyWeatherList.drop(1).take(5)
+                    forecastAdapter.submitList(updatedList)
+                }
             }
         }
     }
 
     private fun observeHourly() {
-        viewModel.hourlyWeather.observe(viewLifecycleOwner) { hourlyWeatherList ->
-            hourlyAdapter.submitList(hourlyWeatherList)
-        }
-    }
-    private fun observeWeatherData() {
-        viewModel.weatherData.observe(viewLifecycleOwner) { weather ->
-            if (weather != null) {
-                val date = java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault())
-                    .format(java.util.Date(weather.dt * 1000L)) // Multiply by 1000 to convert to milliseconds
-
-                view?.findViewById<TextView>(R.id.tv_date)?.text = date // Set the formatted date
-                view?.findViewById<TextView>(R.id.tv_city_name)?.text = weather.cityName
-                view?.findViewById<TextView>(R.id.tv_temperature)?.text = "${weather.temperature}°C"
-                view?.findViewById<TextView>(R.id.tv_visibility)?.text = "Visibility: ${weather.visibility} m"
-
-                // Function to capitalize the first letter of each word
-                fun capitalizeFirstLetter(text: String): String {
-                    return text.split(" ").joinToString(" ") { it.capitalize() }
-                }
-
-// Assuming 'weather.description' is the weather description string
-                val weatherDescription = weather.description
-                val capitalizedDescription = capitalizeFirstLetter(weatherDescription)
-
-// Set the text of the TextView
-                view?.findViewById<TextView>(R.id.tv_weather_description)?.text = capitalizedDescription
-
-                view?.findViewById<TextView>(R.id.tv_humidity)?.text =
-                    "Humidity: ${weather.humidity}%"
-                view?.findViewById<TextView>(R.id.tv_wind_speed)?.text =
-                    "Wind Speed: ${weather.windSpeed} m/s"
-                view?.findViewById<TextView>(R.id.tv_pressure)?.text =
-                    "Pressure: ${weather.pressure} hPa"
-                view?.findViewById<TextView>(R.id.tv_clouds)?.text = "Clouds: ${weather.clouds}%"
-
-                val weatherIconView = view?.findViewById<ImageView>(R.id.weather_icon)
-
-                weatherIconView?.setImageResource(setIcon(weather.icon))
+        lifecycleScope.launch {
+            viewModel.hourlyWeather.collect { hourlyWeatherList ->
+                val limitedHourlyWeatherList = hourlyWeatherList.take(15)
+                hourlyAdapter.submitList(limitedHourlyWeatherList)
             }
         }
     }
 
+    private fun observeWeatherData() {
+        lifecycleScope.launch {
+            viewModel.weatherData.collect { weather ->
+                if (weather != null) {
+                    val date = java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault())
+                        .format(java.util.Date(weather.dt * 1000L))
 
+                    view?.findViewById<TextView>(R.id.tv_date)?.text = date
+                    view?.findViewById<TextView>(R.id.tv_city_name)?.text = weather.cityName
+                    view?.findViewById<TextView>(R.id.tv_temperature)?.text = "${weather.temperature}°C"
+                    view?.findViewById<TextView>(R.id.tv_visibility)?.text = "Visibility: ${weather.visibility} m"
+
+                    val weatherDescription = weather.description
+                    val capitalizedDescription = capitalizeFirstLetter(weatherDescription)
+
+                    view?.findViewById<TextView>(R.id.tv_weather_description)?.text = capitalizedDescription
+                    view?.findViewById<TextView>(R.id.tv_humidity)?.text = "Humidity: ${weather.humidity}%"
+                    view?.findViewById<TextView>(R.id.tv_wind_speed)?.text = "Wind Speed: ${weather.windSpeed} m/s"
+                    view?.findViewById<TextView>(R.id.tv_pressure)?.text = "Pressure: ${weather.pressure} hPa"
+                    view?.findViewById<TextView>(R.id.tv_clouds)?.text = "Clouds: ${weather.clouds}%"
+
+                    val weatherIconView = view?.findViewById<ImageView>(R.id.weather_icon)
+                    weatherIconView?.setImageResource(setIcon(weather.icon))
+                }
+            }
+        }
+    }
 
     private fun getCurrentLocation(callback: (Double?, Double?) -> Unit) {
         if (ActivityCompat.checkSelfPermission(

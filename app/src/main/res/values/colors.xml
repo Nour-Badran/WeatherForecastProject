@@ -6,5 +6,11 @@
     <color name="card_background_color">#007BFF</color> <!-- A vibrant blue -->
     <color name="card_background_color2">#F5F5F5</color> <!-- A light gray -->
     <color name="card_background_color3">#003366</color> <!-- A deep navy blue -->
+        <!-- Color when selected -->
+        <color name="color_selected">#FF5722</color> <!-- Example: Orange -->
+        <!-- Color when not selected -->
+        <color name="color_default">#E0E0E0</color> <!-- Example: Light Gray -->
+        <!-- Stroke color -->
+        <color name="color_stroke">#144427</color> <!-- Example: Dark Green -->
 
 </resources>

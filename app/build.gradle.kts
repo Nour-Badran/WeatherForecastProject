@@ -51,6 +51,9 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.fragment)
     implementation(libs.play.services.location)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     kapt ("androidx.room:room-compiler:2.6.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 

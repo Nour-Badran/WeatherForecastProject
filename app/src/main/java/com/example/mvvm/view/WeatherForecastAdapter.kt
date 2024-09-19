@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvm.R
+import com.example.mvvm.capitalizeFirstLetter
 import com.example.mvvm.model.DailyWeather
 import com.example.mvvm.setIcon
 
@@ -35,10 +36,11 @@ class WeatherForecastAdapter : ListAdapter<DailyWeather, WeatherForecastAdapter.
                     .format(java.util.Date(forecast.day * 1000L))
             }
 
-
+            val weatherDescription = forecast.weatherStatus
+            val capitalizedDescription = capitalizeFirstLetter(weatherDescription)
             // Set values to views
             itemView.findViewById<TextView>(R.id.tv_forecast_date).text = dateText
-            itemView.findViewById<TextView>(R.id.tv_weather_status).text = forecast.weatherStatus
+            itemView.findViewById<TextView>(R.id.tv_weather_status).text = capitalizedDescription
             itemView.findViewById<TextView>(R.id.tv_max_temp).text = "Max ${forecast.maxTemp}°C"
             itemView.findViewById<TextView>(R.id.tv_min_temp).text = "Min ${forecast.minTemp}°C"
 

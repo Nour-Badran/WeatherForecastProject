@@ -102,28 +102,32 @@ fun mapDailyWeather(response: FiveDayResponse): List<DailyWeather> {
     return dailyMap.values.toList()
 }
 @RequiresApi(Build.VERSION_CODES.O)
-fun mapHourlyWeatherForToday(response: FiveDayResponse): List<HourlyWeather> {
-    // Get the current date in the system's default timezone
+fun mapHourlyWeatherForTodayAndTomorrow(response: FiveDayResponse): List<HourlyWeather> {
+    // Get the current date and tomorrow's date in the system's default timezone
     val currentDate = LocalDate.now(ZoneId.systemDefault())
+    val tomorrowDate = currentDate.plusDays(1)
 
-    // Filter hourly data to find entries for today
-    val hourlyDataForToday = response.list.filter { item ->
+    // Filter hourly data to find entries for today and tomorrow
+    val hourlyDataForTodayAndTomorrow = response.list.filter { item ->
         val forecastDate = Instant.ofEpochSecond(item.dt)
             .atZone(ZoneId.systemDefault())
             .toLocalDate()
-        forecastDate == currentDate
+        forecastDate == currentDate || forecastDate == tomorrowDate
     }
 
-    if (hourlyDataForToday.isEmpty()) {
+    if (hourlyDataForTodayAndTomorrow.isEmpty()) {
         return emptyList()  // Return empty list or default data
     }
 
     // Map the filtered data to HourlyWeather
-    return hourlyDataForToday.map { item ->
+    return hourlyDataForTodayAndTomorrow.map { item ->
         HourlyWeather(
             day = item.dt,         // timestamp in seconds
             icon = item.weather[0].icon,
             temperature = item.main.temp
         )
     }
+}
+fun capitalizeFirstLetter(text: String): String {
+    return text.split(" ").joinToString(" ") { it.capitalize() }
 }
