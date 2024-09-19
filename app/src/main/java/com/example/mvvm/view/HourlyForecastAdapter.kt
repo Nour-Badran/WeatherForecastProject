@@ -32,11 +32,12 @@ class HourlyForecastAdapter :
         holder.bind(hourlyData[position])
     }
 
-    class HourlyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class HourlyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(hourlyWeather: HourlyWeather) {
             val timeTextView = itemView.findViewById<TextView>(R.id.tv_hour)
             val iconImageView = itemView.findViewById<ImageView>(R.id.iv_weather_icon)
             val tempTextView = itemView.findViewById<TextView>(R.id.tv_temperature)
+            val labelTextView = itemView.findViewById<TextView>(R.id.tv_today_tomorrow)
 
             // Convert timestamp to time string
             val time = java.text.SimpleDateFormat("h a", java.util.Locale.getDefault())
@@ -48,6 +49,20 @@ class HourlyForecastAdapter :
 
             // Set temperature
             tempTextView.text = "${hourlyWeather.temperature.toInt()}°C"
+
+            // Determine "Today" or "Tomorrow"
+            val currentDate = java.time.LocalDate.now(java.time.ZoneId.systemDefault())
+            val forecastDate = java.time.Instant.ofEpochSecond(hourlyWeather.day)
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate()
+
+            val label = when (forecastDate) {
+                currentDate -> "Today"
+                currentDate.plusDays(1) -> "Tom"
+                else -> ""
+            }
+            labelTextView.text = label
         }
     }
 }
+

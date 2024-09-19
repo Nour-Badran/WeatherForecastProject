@@ -43,7 +43,11 @@ data class Main(
 
 data class Wind(val speed: Double)
 data class Clouds(val all: Int)
-data class Forecast(val temp: Double, val date: String)
+data class Forecast(
+    val dt: Long,              // Date-time in Unix format
+    val temp: Double,          // Temperature
+    val date: String           // The formatted date as a string (optional)
+)
 
 data class FiveDayResponse(
     val cod: String,

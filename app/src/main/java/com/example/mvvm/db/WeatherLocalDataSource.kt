@@ -37,11 +37,6 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         icon = icon
     )
 
-    private fun Forecast.toEntity() = ForecastEntity(
-        temp = temp,
-        date = date
-    )
-
     private fun WeatherEntity.toModel() = WeatherData(
         cityName = cityName,
         temperature = temperature,
@@ -55,10 +50,5 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         iconResId = iconResId, // Use the stored iconResId from WeatherEntity
         forecast = emptyList() ,
         icon = icon
-    )
-
-    private fun ForecastEntity.toModel() = Forecast(
-        temp = temp,
-        date = date
     )
 }
