@@ -1,37 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/card_background_color3"
+    android:background="?attr/selectableItemBackground"
     android:padding="16dp">
 
-    <!-- Date of the forecast -->
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="74dp"
-        android:layout_gravity="right|top"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/tv_forecast_date"
-        android:layout_width="wrap_content"
+    <!-- Vertical LinearLayout for overall content -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Date"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingBottom="8dp"/>
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
-    <!-- Temperature of the forecast -->
-    <TextView
-        android:id="@+id/tv_forecast_temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Temperature"
-        android:textAppearance="?attr/textAppearanceListItemSecondary"
-        android:textSize="14sp"/>
+        <!-- Horizontal layout for weather icon and forecast details -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:paddingBottom="8dp">
 
-</LinearLayout>
+            <!-- Weather Icon -->
+            <ImageView
+                android:id="@+id/iv_weather_icon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="Weather Icon"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <!-- Vertical Layout for Weather Info -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!-- Date -->
+                <TextView
+                    android:id="@+id/tv_forecast_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="4dp"
+                    android:text="Date"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <!-- Weather Status (Clear, Rainy, etc.) -->
+                <TextView
+                    android:id="@+id/tv_weather_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Clear Sky"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <!-- Min and Max Temperature -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <!-- Max Temperature -->
+                <TextView
+                    android:id="@+id/tv_max_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Max 25°C"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <!-- Min Temperature -->
+                <TextView
+                    android:id="@+id/tv_min_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Min 15°C"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -4,7 +4,7 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:textViewStyle">@style/AppTextViewStyle</item>
-
+        <item name="colorPrimary">@color/card_background_color</item>
     </style>
 
     <style name="Theme.MVVM" parent="Base.Theme.MVVM" />

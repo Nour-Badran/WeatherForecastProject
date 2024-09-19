@@ -12,8 +12,7 @@ import com.example.mvvm.R
 import com.example.mvvm.model.DailyWeather
 import com.example.mvvm.setIcon
 
-class WeatherForecastAdapter(private val dailyWeather: List<DailyWeather>) :
-    ListAdapter<DailyWeather, WeatherForecastAdapter.WeatherViewHolder>(ForecastDiffCallback()) {
+class WeatherForecastAdapter : ListAdapter<DailyWeather, WeatherForecastAdapter.WeatherViewHolder>(ForecastDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -27,14 +26,28 @@ class WeatherForecastAdapter(private val dailyWeather: List<DailyWeather>) :
 
     class WeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(forecast: DailyWeather) {
-            val date = java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault())
-                .format(java.util.Date(forecast.day * 1000L)) // Multiply by 1000 to convert to milliseconds
-            itemView.findViewById<TextView>(R.id.tv_forecast_date).text = date
-            itemView.findViewById<TextView>(R.id.tv_forecast_temp).text = "${forecast.maxTemp}°C"
-            itemView.findViewById<ImageView>(R.id.imageView).setImageResource(setIcon(forecast.icon))
+            // Convert Unix timestamp to date
+            val dateText = if (position == 0) {
+                "Tomorrow"
+            } else {
+                // Convert Unix timestamp to date for other days
+                java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault())
+                    .format(java.util.Date(forecast.day * 1000L))
+            }
+
+
+            // Set values to views
+            itemView.findViewById<TextView>(R.id.tv_forecast_date).text = dateText
+            itemView.findViewById<TextView>(R.id.tv_weather_status).text = forecast.weatherStatus
+            itemView.findViewById<TextView>(R.id.tv_max_temp).text = "Max ${forecast.maxTemp}°C"
+            itemView.findViewById<TextView>(R.id.tv_min_temp).text = "Min ${forecast.minTemp}°C"
+
+            // Set weather icon
+            itemView.findViewById<ImageView>(R.id.iv_weather_icon).setImageResource(setIcon(forecast.icon))
         }
     }
 }
+
 
 class ForecastDiffCallback : DiffUtil.ItemCallback<DailyWeather>() {
     override fun areItemsTheSame(oldItem: DailyWeather, newItem: DailyWeather): Boolean {

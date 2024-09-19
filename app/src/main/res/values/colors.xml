@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="your_color">#FF5733</color> <!-- Replace with your desired color -->
+    <color name="card_background_color">#007BFF</color> <!-- A vibrant blue -->
+    <color name="card_background_color2">#F5F5F5</color> <!-- A light gray -->
+    <color name="card_background_color3">#003366</color> <!-- A deep navy blue -->
+
 </resources>

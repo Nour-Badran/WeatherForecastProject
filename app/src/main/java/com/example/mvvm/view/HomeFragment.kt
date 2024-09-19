@@ -30,6 +30,7 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var forecastAdapter: WeatherForecastAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var hourlyAdapter: HourlyForecastAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -40,7 +41,7 @@ class HomeFragment : Fragment() {
         setupUI(view)
         observeWeatherData()
         observeDaily()
-        //observeHourly()
+        observeHourly()
         // Fetch location and weather data
         getCurrentLocation { lat, lon ->
             if (lat != null && lon != null) {
@@ -55,18 +56,32 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUI(view: View) {
-        forecastAdapter = WeatherForecastAdapter(emptyList())
-        view.findViewById<RecyclerView>(R.id.rv_weather_forecast).apply {
+        forecastAdapter = WeatherForecastAdapter()
+        view.findViewById<RecyclerView>(R.id.rv_daily_forecast).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = forecastAdapter
         }
+        hourlyAdapter = HourlyForecastAdapter()
+        view.findViewById<RecyclerView>(R.id.rv_hourly_forecast).apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = hourlyAdapter
+        }
     }
-    private fun observeDaily(){
-        viewModel.dailyWeather.observe(viewLifecycleOwner){
-            forecastAdapter.submitList(it)
+    private fun observeDaily() {
+        viewModel.dailyWeather.observe(viewLifecycleOwner) { dailyWeatherList ->
+            if (dailyWeatherList.isNotEmpty()) {
+                // Remove the first item from the list
+                val updatedList = dailyWeatherList.drop(1)
+                forecastAdapter.submitList(updatedList)
+            }
         }
     }
 
+    private fun observeHourly() {
+        viewModel.hourlyWeather.observe(viewLifecycleOwner) { hourlyWeatherList ->
+            hourlyAdapter.submitList(hourlyWeatherList)
+        }
+    }
     private fun observeWeatherData() {
         viewModel.weatherData.observe(viewLifecycleOwner) { weather ->
             if (weather != null) {
@@ -78,8 +93,18 @@ class HomeFragment : Fragment() {
                 view?.findViewById<TextView>(R.id.tv_temperature)?.text = "${weather.temperature}°C"
                 view?.findViewById<TextView>(R.id.tv_visibility)?.text = "Visibility: ${weather.visibility} m"
 
-                view?.findViewById<TextView>(R.id.tv_weather_description)?.text =
-                    weather.description
+                // Function to capitalize the first letter of each word
+                fun capitalizeFirstLetter(text: String): String {
+                    return text.split(" ").joinToString(" ") { it.capitalize() }
+                }
+
+// Assuming 'weather.description' is the weather description string
+                val weatherDescription = weather.description
+                val capitalizedDescription = capitalizeFirstLetter(weatherDescription)
+
+// Set the text of the TextView
+                view?.findViewById<TextView>(R.id.tv_weather_description)?.text = capitalizedDescription
+
                 view?.findViewById<TextView>(R.id.tv_humidity)?.text =
                     "Humidity: ${weather.humidity}%"
                 view?.findViewById<TextView>(R.id.tv_wind_speed)?.text =
