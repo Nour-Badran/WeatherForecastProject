@@ -37,10 +37,8 @@ data class Main(
     val pressure: Int,
     val humidity: Int,
     val seaLevel: Int? = null,
-    val grndLevel: Int? = null,
-    val temp_kf: Double
+    val grndLevel: Int? = null
 )
-
 data class Wind(val speed: Double)
 data class Clouds(val all: Int)
 data class Forecast(
@@ -57,7 +55,7 @@ data class FiveDayResponse(
     val city: City
 )
 
-class WeatherItem(
+data class WeatherItem(
     val dt: Long,
     val main: Main,
     val weather: List<WeatherData>,
@@ -65,8 +63,9 @@ class WeatherItem(
     val wind: Wind,
     val dt_txt: String,
     val pop: Double?,
-    val rain: Rain,
+    val rain: Rain
 )
+
 
 data class Rain(@SerializedName("3h") val volume: Double? = null)
 data class HourlyWeather(val day: Long, val icon: String, val temperature: Double)

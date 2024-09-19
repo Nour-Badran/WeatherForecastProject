@@ -1,8 +1,10 @@
 package com.example.mvvm.db
 
 import android.util.Log
+import com.example.mvvm.model.FiveDayResponse
 import com.example.mvvm.model.Forecast
 import com.example.mvvm.model.WeatherData
+import com.example.mvvm.model.WeatherItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -15,6 +17,14 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         }
     }
 
+    suspend fun saveForecastData(forecast: FiveDayResponse) {
+        withContext(Dispatchers.IO) {
+            weatherDao.deleteAllForecastData()
+            val forecastEntities = forecast.list.map { it.toEntity() }
+            weatherDao.insertForecastData(forecastEntities)
+        }
+    }
+
     suspend fun getWeatherData(): WeatherData? {
         return withContext(Dispatchers.IO) {
             val entity = weatherDao.getWeatherData()
@@ -22,7 +32,12 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         }
     }
 
-    // Extension functions to convert WeatherData to WeatherEntity and vice versa
+    suspend fun getForecastData(): List<ForecastEntity> {
+        return withContext(Dispatchers.IO) {
+            weatherDao.getForecastData()
+        }
+    }
+
     private fun WeatherData.toEntity() = WeatherEntity(
         cityName = cityName,
         temperature = temperature,
@@ -32,7 +47,7 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         pressure = pressure,
         clouds = clouds,
         dt = dt,
-        visibility =visibility,
+        visibility = visibility,
         iconResId = iconResId,
         icon = icon
     )
@@ -47,8 +62,27 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         clouds = clouds,
         dt = dt,
         visibility = visibility,
-        iconResId = iconResId, // Use the stored iconResId from WeatherEntity
-        forecast = emptyList() ,
+        iconResId = iconResId,
+        forecast = emptyList(),
         icon = icon
     )
+
+    private fun WeatherItem.toEntity() = ForecastEntity(
+        dt = dt,
+        temp = main.temp,
+        feelsLike = main.feelsLike,
+        tempMin = main.tempMin,
+        tempMax = main.tempMax,
+        pressure = main.pressure,
+        humidity = main.humidity,
+        windSpeed = wind.speed,
+        clouds = clouds.all,
+        pop = pop,
+        rainVolume = rain?.volume ?: 0.0, // Provide a default value if rain is null
+        weatherDescription = weather.firstOrNull()?.description ?: "",
+        icon = weather.firstOrNull()?.icon ?: "",
+        dtTxt = dt_txt
+    )
+
+
 }
