@@ -1,8 +1,9 @@
-package com.example.mvvm
+package com.example.mvvm.utilities
 
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.mvvm.R
 import com.example.mvvm.model.DailyWeather
 import com.example.mvvm.model.FiveDayResponse
 import com.example.mvvm.model.HourlyWeather

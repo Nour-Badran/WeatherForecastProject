@@ -18,15 +18,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.mvvm.viewmodel.HomeViewModel
 import com.example.mvvm.R
-import com.example.mvvm.capitalizeFirstLetter
-import com.example.mvvm.setIcon
+import com.example.mvvm.utilities.capitalizeFirstLetter
+import com.example.mvvm.utilities.setIcon
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.OnSuccessListener
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {

@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvm.R
-import com.example.mvvm.capitalizeFirstLetter
+import com.example.mvvm.utilities.capitalizeFirstLetter
 import com.example.mvvm.model.DailyWeather
-import com.example.mvvm.setIcon
+import com.example.mvvm.utilities.setIcon
 
 class WeatherForecastAdapter : ListAdapter<DailyWeather, WeatherForecastAdapter.WeatherViewHolder>(ForecastDiffCallback()) {
 

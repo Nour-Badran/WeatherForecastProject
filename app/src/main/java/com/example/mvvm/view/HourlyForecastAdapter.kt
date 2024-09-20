@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvm.R
 import com.example.mvvm.model.HourlyWeather
-import com.example.mvvm.setIcon
+import com.example.mvvm.utilities.setIcon
 
 class HourlyForecastAdapter :
     RecyclerView.Adapter<HourlyForecastAdapter.HourlyViewHolder>() {

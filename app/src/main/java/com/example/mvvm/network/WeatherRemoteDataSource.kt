@@ -1,20 +1,10 @@
 package com.example.mvvm.network
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
-import com.example.mvvm.R
-import com.example.mvvm.mapToWeatherData
-import com.example.mvvm.model.DailyWeather
+import com.example.mvvm.utilities.mapToWeatherData
 import com.example.mvvm.model.FiveDayResponse
-import com.example.mvvm.model.HourlyWeather
-import com.example.mvvm.model.WeatherApiResponse
 import com.example.mvvm.model.WeatherData
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
 
 class WeatherRemoteDataSource {
 

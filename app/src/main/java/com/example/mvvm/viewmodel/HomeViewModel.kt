@@ -5,10 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mvvm.db.WeatherDatabase
 import com.example.mvvm.db.WeatherLocalDataSource
-import com.example.mvvm.mapDailyWeather
-import com.example.mvvm.mapHourlyWeatherForTodayAndTomorrow
+import com.example.mvvm.utilities.mapDailyWeather
+import com.example.mvvm.utilities.mapHourlyWeatherForTodayAndTomorrow
 import com.example.mvvm.model.DailyWeather
-import com.example.mvvm.model.FiveDayResponse
 import com.example.mvvm.model.HourlyWeather
 import com.example.mvvm.model.WeatherData
 import com.example.mvvm.model.WeatherRepository

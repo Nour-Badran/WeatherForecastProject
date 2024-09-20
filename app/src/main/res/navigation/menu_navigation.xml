@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/SettingsFragment"
-        android:name="com.example.mvvm.SettingsFragment"
+        android:name="com.example.mvvm.view.SettingsFragment"
         android:label="SettingsFragment">
         <action
             android:id="@+id/action_settingsFragment_to_homeFragment"
@@ -34,7 +34,7 @@
 
     <fragment
         android:id="@+id/FavouritesFragment"
-        android:name="com.example.mvvm.FavouritesFragment"
+        android:name="com.example.mvvm.view.FavouritesFragment"
         android:label="fragment_profile">
         <action
             android:id="@+id/action_profileFragment2_to_homeFragment"
@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/AlertFragment"
-        android:name="com.example.mvvm.AlertFragment"
+        android:name="com.example.mvvm.view.AlertFragment"
         android:label="AlertFragment">
         <action
             android:id="@+id/action_myCardFragment_to_homeFragment"
