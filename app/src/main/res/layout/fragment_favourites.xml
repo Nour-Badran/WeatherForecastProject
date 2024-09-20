@@ -6,12 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".view.FavouritesFragment">
 
+    <!-- Title for the page -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/app"
+        android:padding="8dp"
+        android:text="Favourite Places"
+        android:textColor="@android:color/black"
+        android:textSize="24sp" />
+
     <!-- RecyclerView for the list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible" /> <!-- Initially visible, will be hidden if empty -->
+        android:layout_marginTop="60dp"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:visibility="visible" />
 
     <!-- Placeholder view when the RecyclerView is empty -->
     <LinearLayout
@@ -48,7 +64,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="75dp"
         android:src="@drawable/add_24dp_e8eaed_fill0_wght400_grad0_opsz24"
-        app:backgroundTint="@color/card_background_color"
-        app:rippleColor="@color/card_background_color2" />
+        app:backgroundTint="@color/colorPrimary"
+        app:rippleColor="@color/colorSecondary" />
 
 </FrameLayout>

@@ -7,7 +7,7 @@
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="8dp"
-    app:cardBackgroundColor="@color/card_background_color3"
+    app:cardBackgroundColor="@color/colorPrimary"
     android:background="?attr/selectableItemBackground"
     android:padding="16dp">
 
@@ -51,8 +51,9 @@
                     android:paddingBottom="4dp"
                     android:text="Date"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
-                    android:textColor="@color/white"
                     android:textSize="20sp"
+                    android:textColor="@color/colorText"
+                    android:background="@color/colorPrimary"
                     android:textStyle="bold" />
 
                 <!-- Weather Status (Clear, Rainy, etc.) -->
@@ -62,7 +63,8 @@
                     android:layout_height="wrap_content"
                     android:text="Clear Sky"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorText"
+                    android:background="@color/colorPrimary"
                     android:textSize="20sp" />
 
             </LinearLayout>
@@ -80,7 +82,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Max 25°C"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorText"
+                    android:background="@color/colorPrimary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -90,7 +93,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Min 15°C"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorText"
+                    android:background="@color/colorPrimary"
                     android:textSize="20sp" />
 
             </LinearLayout>

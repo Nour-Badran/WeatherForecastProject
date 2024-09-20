@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="18dp"
                 android:padding="16dp"
-                app:cardBackgroundColor="@color/card_background_color3"
+                app:cardBackgroundColor="@color/colorPrimary"
                 app:cardCornerRadius="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,8 @@
                         android:fontFamily="@font/app"
                         android:gravity="center"
                         android:text="City Name"
-                        android:textColor="@color/white"
+                        android:textColor="@color/colorText"
+                        android:background="@color/colorPrimary"
                         android:textSize="30sp"
                         android:textStyle="bold" />
 
@@ -58,7 +59,8 @@
                         android:fontFamily="@font/app"
                         android:gravity="center"
                         android:text="Date"
-                        android:textColor="@color/white"
+                        android:textColor="@color/colorText"
+                        android:background="@color/colorPrimary"
                         android:textSize="24sp" />
 
                     <!-- Temperature with Weather Icon -->
@@ -75,7 +77,8 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/app"
                             android:text="21°C"
-                            android:textColor="@color/white"
+                            android:textColor="@color/colorText"
+                            android:background="@color/colorPrimary"
                             android:textSize="60sp"
                             android:textStyle="bold" />
 
@@ -96,7 +99,8 @@
                         android:fontFamily="@font/app"
                         android:gravity="center"
                         android:text="Clear Sky"
-                        android:textColor="@color/white"
+                        android:textColor="@color/colorText"
+                        android:background="@color/colorPrimary"
                         android:textSize="34sp" />
 
                     <!-- Weather Stats in Grid Format -->
@@ -121,16 +125,18 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="8dp"
+                                android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
                                 android:text="Humidity: 50%"
-                                android:textColor="@color/white"
-                                android:textSize="18sp" />
+                                android:textColor="@color/colorText"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
 
                             <ImageView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:contentDescription="Humidity icon"
-                                android:src="@drawable/img_5" />
+                                android:src="@drawable/humidity_percentage_24dp_e8eaed_fill0_wght400_grad0_opsz24" />
                         </LinearLayout>
 
                         <!-- Wind Speed -->
@@ -147,16 +153,18 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="0dp"
                                 android:layout_marginEnd="8dp"
+                                android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
                                 android:text="Wind Speed: 5 m/s"
-                                android:textColor="@color/white"
-                                android:textSize="18sp" />
+                                android:textColor="@color/colorText"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
 
                             <ImageView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:contentDescription="Wind Speed icon"
-                                android:src="@drawable/img_6" />
+                                android:src="@drawable/air_24dp_e8eaed_fill0_wght400_grad0_opsz24" />
                         </LinearLayout>
 
                         <!-- Pressure -->
@@ -172,10 +180,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="8dp"
+                                android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
                                 android:text="Pressure: 1013 hPa"
-                                android:textColor="@color/white"
-                                android:textSize="18sp" />
+                                android:textColor="@color/colorText"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
 
                             <ImageView
                                 android:layout_width="32dp"
@@ -198,16 +208,18 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="0dp"
                                 android:layout_marginEnd="8dp"
+                                android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
                                 android:text="Clouds: 20%"
-                                android:textColor="@color/white"
-                                android:textSize="18sp" />
+                                android:textColor="@color/colorText"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
 
                             <ImageView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:contentDescription="Clouds icon"
-                                android:src="@drawable/img_8" />
+                                android:src="@drawable/cloud_24dp_e8eaed_fill0_wght400_grad0_opsz24" />
                         </LinearLayout>
 
                         <!-- Visibility -->
@@ -223,16 +235,18 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="8dp"
+                                android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
                                 android:text="Visibility: N/A"
-                                android:textColor="@color/white"
-                                android:textSize="18sp" />
+                                android:textColor="@color/colorText"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
 
                             <ImageView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:contentDescription="Visibility icon"
-                                android:src="@drawable/img_7" />
+                                android:src="@drawable/visibility_24dp_e8eaed_fill0_wght400_grad0_opsz24" />
                         </LinearLayout>
                     </GridLayout>
                 </LinearLayout>

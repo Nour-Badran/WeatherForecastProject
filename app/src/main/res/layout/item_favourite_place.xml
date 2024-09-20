@@ -2,8 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/rounded_background"
+    android:elevation="4dp"
+    android:gravity="center_vertical">
 
     <!-- Place Name -->
     <TextView
@@ -11,15 +16,25 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:paddingStart="8dp"
+        android:textColor="@color/colorText"
+        android:background="@color/colorPrimary"
+        android:paddingEnd="8dp"
         android:text="Place Name"
-        android:textSize="18sp"
-        android:textColor="@android:color/black" />
+        android:textSize="24sp" />
 
     <!-- Delete Icon -->
     <ImageView
         android:id="@+id/deleteIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_delete"
-        android:contentDescription="Delete place" />
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/delete_forever_24dp_e8eaed_fill0_wght400_grad0_opsz24"
+        app:tint="@android:color/holo_red_dark"
+        android:contentDescription="Delete place"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="8dp"
+        android:layout_marginStart="8dp"/>
 </LinearLayout>
