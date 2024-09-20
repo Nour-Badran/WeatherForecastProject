@@ -8,7 +8,7 @@
             <shape android:shape="rectangle">
                 <corners  android:radius="27dp" />
                 <stroke android:width="2dp" android:color="#144427" />
-                <solid android:color="@color/card_background_color" /> <!-- Color when selected -->
+                <solid android:color="@color/colorPrimary" /> <!-- Color when selected -->
             </shape>
         </inset>
     </item>
@@ -21,7 +21,7 @@
             <shape android:shape="rectangle">
                 <corners android:radius="27dp" />
                 <stroke android:width="2dp" android:color="#144427" />
-                <solid android:color="@color/color_default" /> <!-- Default color when not selected -->
+                <solid android:color="@color/colorSecondary" /> <!-- Default color when not selected -->
             </shape>
         </inset>
     </item>
