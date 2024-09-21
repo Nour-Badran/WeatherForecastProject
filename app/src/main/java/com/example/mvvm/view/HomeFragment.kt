@@ -39,6 +39,8 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
+import java.util.Locale
 
 class HomeFragment : Fragment() {
 
@@ -48,12 +50,12 @@ class HomeFragment : Fragment() {
     private lateinit var forecastAdapter: WeatherForecastAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var hourlyAdapter: HourlyForecastAdapter
+    private var selectedLanguage: String = "en"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = HomeFragmentBinding.inflate(inflater, container, false)
-        val view = inflater.inflate(R.layout.home_fragment, container, false)
         val weatherDao = WeatherDatabase.getDatabase(requireActivity().application).weatherDao()
         val weatherRepository = WeatherRepository(
             context = requireActivity().application,
@@ -68,7 +70,7 @@ class HomeFragment : Fragment() {
 
 // Create SettingsViewModelFactory using the settings repository
         val settingsFactory = SettingsViewModelFactory(requireActivity().application, settingsRepository)
-        settingsViewModel = ViewModelProvider(this, settingsFactory).get(SettingsViewModel::class.java)
+        settingsViewModel = ViewModelProvider(requireActivity(), settingsFactory).get(SettingsViewModel::class.java)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         setupUI()
@@ -91,14 +93,24 @@ class HomeFragment : Fragment() {
         showOverallLoading()
         getCurrentLocation { lat, lon ->
             if (lat != null && lon != null) {
-                viewModel.fetchForecastData(lat, lon, "477840c0a8b416725948f965ee5450ec", "metric")
-                viewModel.fetchWeatherData(lat, lon, "477840c0a8b416725948f965ee5450ec", "metric")
+                // Fetch the language setting based on the selected RadioButton ID
+                val selectedLanguageId = settingsViewModel.getLanguageId()
+                 selectedLanguage = when (selectedLanguageId) {
+                    R.id.arabic_radio_button -> "ar"
+                    R.id.english_radio_button -> "en"
+                    else -> "null"
+                }
+                viewModel.fetchForecastData(lat, lon, "477840c0a8b416725948f965ee5450ec", "metric", selectedLanguage)
+                viewModel.fetchWeatherData(lat, lon, "477840c0a8b416725948f965ee5450ec", "metric", selectedLanguage)
+
             } else {
                 Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show()
             }
             hideOverallLoading()
         }
     }
+
+
 
     private fun showOverallLoading() {
         binding.progressBarWeather.visibility = View.VISIBLE
@@ -113,13 +125,20 @@ class HomeFragment : Fragment() {
 
     }
     private fun setupUI() {
-        forecastAdapter = WeatherForecastAdapter()
+        val selectedLanguageId = settingsViewModel.getLanguageId()
+        selectedLanguage = when (selectedLanguageId) {
+            R.id.arabic_radio_button -> "ar"
+            R.id.english_radio_button -> "en"
+            else -> "null"
+        }
+
+        forecastAdapter = WeatherForecastAdapter(selectedLanguage)
         binding.rvDailyForecast.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = forecastAdapter
         }
 
-        hourlyAdapter = HourlyForecastAdapter()
+        hourlyAdapter = HourlyForecastAdapter(selectedLanguage)
         binding.rvHourlyForecast.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = hourlyAdapter
@@ -174,23 +193,56 @@ class HomeFragment : Fragment() {
 
                     binding.tvDate.text = date
                     binding.tvCityName.text = it.cityName
-                    binding.tvTemperature.text = "${it.temperature}°C"
-                    binding.tvVisibility.text = "Visibility: ${it.visibility} m"
+
+                    // Format temperature
+                    val temperature = NumberFormat.getInstance(if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH)
+                        .format(it.temperature.toInt())
+                    binding.tvTemperature.text = "$temperature°${if (selectedLanguage == "ar") "م" else "C"}"
+
+                    // Format visibility, humidity, wind speed, pressure, and clouds
+                    val locale = if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH
+                    val numberFormat = NumberFormat.getInstance(locale)
+
+                    binding.tvVisibility.text = if (selectedLanguage == "en") {
+                        "Visibility: ${numberFormat.format(it.visibility)} m"
+                    } else {
+                        "الرؤية: ${numberFormat.format(it.visibility)} م"
+                    }
 
                     val weatherDescription = weather.description
                     val capitalizedDescription = capitalizeFirstLetter(weatherDescription)
 
                     binding.tvWeatherDescription.text = capitalizedDescription
-                    binding.tvHumidity.text = "Humidity: ${it.humidity}%"
-                    binding.tvWindSpeed.text = "Wind Speed: ${it.windSpeed} m/s"
-                    binding.tvPressure.text = "Pressure: ${it.pressure} hPa"
-                    binding.tvClouds.text = "Clouds: ${it.clouds}%"
+                    binding.tvHumidity.text = if (selectedLanguage == "en") {
+                        "Humidity: ${numberFormat.format(it.humidity)}%"
+                    } else {
+                        "الرطوبة: ${numberFormat.format(it.humidity)}%"
+                    }
+
+                    binding.tvWindSpeed.text = if (selectedLanguage == "en") {
+                        "Wind Speed: ${numberFormat.format(it.windSpeed)} m/s"
+                    } else {
+                        "سرعة الرياح: ${numberFormat.format(it.windSpeed)} م/ث"
+                    }
+
+                    binding.tvPressure.text = if (selectedLanguage == "en") {
+                        "Pressure: ${numberFormat.format(it.pressure)} hPa"
+                    } else {
+                        "الضغط: ${numberFormat.format(it.pressure)} هكتوباسكال"
+                    }
+
+                    binding.tvClouds.text = if (selectedLanguage == "en") {
+                        "Clouds: ${numberFormat.format(it.clouds)}%"
+                    } else {
+                        "الغيوم: ${numberFormat.format(it.clouds)}%"
+                    }
 
                     binding.weatherIcon.setImageResource(setIcon(it.icon))
                 }
             }
         }
     }
+
 
     private fun getCurrentLocation(callback: (Double?, Double?) -> Unit) {
         if (ActivityCompat.checkSelfPermission(

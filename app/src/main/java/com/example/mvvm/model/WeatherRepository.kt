@@ -18,11 +18,11 @@ class WeatherRepository(
     private val remoteDataSource: WeatherRemoteDataSource
 ) {
 
-    suspend fun getWeatherData(lat: Double, lon: Double, apiKey: String, units: String): Flow<WeatherData?> = flow {
+    suspend fun getWeatherData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null): Flow<WeatherData?> = flow {
         val data = if (isConnectedToInternet()) {
             // Set a timeout duration for remote data fetching
             val remoteData = withTimeoutOrNull(5000L) { // Timeout after 5 seconds
-                remoteDataSource.fetchWeatherData(lat, lon, apiKey, units)
+                remoteDataSource.fetchWeatherData(lat, lon, apiKey, units , lang)
             }
             if (remoteData != null) {
                 // Save data to the local database
@@ -38,11 +38,11 @@ class WeatherRepository(
         }
     }
 
-    suspend fun getForecast(lat: Double, lon: Double, apiKey: String, units: String): Flow<FiveDayResponse?> = flow {
+    suspend fun getForecast(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null): Flow<FiveDayResponse?> = flow {
         val data = if (isConnectedToInternet()) {
             // Timeout for remote forecast data fetching
             val remoteForecast = withTimeoutOrNull(5000L) { // Timeout after 5 seconds
-                remoteDataSource.fetchForecast(lat, lon, apiKey, units)
+                remoteDataSource.fetchForecast(lat, lon, apiKey, units,lang)
             }
             if (remoteForecast != null) {
                 // Save forecast data locally

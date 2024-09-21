@@ -19,7 +19,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/app"
         android:padding="8dp"
-        android:text="Favourite Places"
+        android:text="@string/favourite_places"
         android:textColor="@android:color/black"
         android:textSize="24sp" />
 
@@ -52,7 +52,7 @@
             android:id="@+id/empty_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No places"
+            android:text="@string/no_places"
             android:textSize="34sp"
             android:textColor="@android:color/black"
             android:gravity="center"
@@ -65,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="75dp"
         android:src="@drawable/add_24dp_e8eaed_fill0_wght400_grad0_opsz24"
         app:backgroundTint="@color/colorPrimary"

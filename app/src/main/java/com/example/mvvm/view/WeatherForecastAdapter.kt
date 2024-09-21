@@ -12,8 +12,12 @@ import com.example.mvvm.R
 import com.example.mvvm.utilities.capitalizeFirstLetter
 import com.example.mvvm.model.DailyWeather
 import com.example.mvvm.utilities.setIcon
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
-class WeatherForecastAdapter : ListAdapter<DailyWeather, WeatherForecastAdapter.WeatherViewHolder>(ForecastDiffCallback()) {
+class WeatherForecastAdapter(private val selectedLanguage: String) :
+    ListAdapter<DailyWeather, WeatherForecastAdapter.WeatherViewHolder>(ForecastDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -22,18 +26,17 @@ class WeatherForecastAdapter : ListAdapter<DailyWeather, WeatherForecastAdapter.
     }
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), selectedLanguage)
     }
 
     class WeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(forecast: DailyWeather) {
+        fun bind(forecast: DailyWeather, selectedLanguage: String) {
             // Convert Unix timestamp to date
-            val dateText = if (position == 0) {
-                "Tomorrow"
+            val dateText = if (adapterPosition == 0) {
+                if (selectedLanguage == "ar") "غداً" else "Tomorrow"
             } else {
-                // Convert Unix timestamp to date for other days
-                java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault())
-                    .format(java.util.Date(forecast.day * 1000L))
+                val dateFormat = SimpleDateFormat("EEE, dd MMM yyyy", if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH)
+                dateFormat.format(java.util.Date(forecast.day * 1000L))
             }
 
             val weatherDescription = forecast.weatherStatus
@@ -41,15 +44,20 @@ class WeatherForecastAdapter : ListAdapter<DailyWeather, WeatherForecastAdapter.
             // Set values to views
             itemView.findViewById<TextView>(R.id.tv_forecast_date).text = dateText
             itemView.findViewById<TextView>(R.id.tv_weather_status).text = capitalizedDescription
-            itemView.findViewById<TextView>(R.id.tv_max_temp).text = "Max ${forecast.maxTemp}°C"
-            itemView.findViewById<TextView>(R.id.tv_min_temp).text = "Min ${forecast.minTemp}°C"
+
+            // Format max and min temperatures
+            val numberFormat = NumberFormat.getInstance(if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH)
+            val maxTemp = numberFormat.format(forecast.maxTemp)
+            val minTemp = numberFormat.format(forecast.minTemp)
+
+            itemView.findViewById<TextView>(R.id.tv_max_temp).text = "${if (selectedLanguage == "ar") "الحد الأقصى" else "Max"} $maxTemp°${if (selectedLanguage == "ar") "م" else "C"}"
+            itemView.findViewById<TextView>(R.id.tv_min_temp).text = "${if (selectedLanguage == "ar") "الحد الأدنى" else "Min"} $minTemp°${if (selectedLanguage == "ar") "م" else "C"}"
 
             // Set weather icon
             itemView.findViewById<ImageView>(R.id.iv_weather_icon).setImageResource(setIcon(forecast.icon))
         }
     }
 }
-
 
 class ForecastDiffCallback : DiffUtil.ItemCallback<DailyWeather>() {
     override fun areItemsTheSame(oldItem: DailyWeather, newItem: DailyWeather): Boolean {

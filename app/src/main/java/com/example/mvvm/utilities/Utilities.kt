@@ -12,6 +12,7 @@ import com.example.mvvm.model.WeatherData
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.Locale
 
 fun setIcon(id: String) : Int {
     val iconResource = when (id) {
@@ -132,3 +133,13 @@ fun mapHourlyWeatherForTodayAndTomorrow(response: FiveDayResponse): List<HourlyW
 fun capitalizeFirstLetter(text: String): String {
     return text.split(" ").joinToString(" ") { it.capitalize() }
 }
+//fun setLocale(language: String) {
+//    val locale = Locale(language)
+//    Locale.setDefault(locale)
+//    val config = resources.configuration
+//    config.setLocale(locale)
+//    resources.updateConfiguration(config, resources.displayMetrics)
+//
+//    // Optionally restart the activity to apply changes
+//    activity?.recreate()
+//}

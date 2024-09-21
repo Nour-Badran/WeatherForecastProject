@@ -33,7 +33,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="16dp"
-                android:contentDescription="Weather Icon"
+                android:contentDescription="@string/weather_icon"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <!-- Vertical Layout for Weather Info -->
@@ -48,12 +48,12 @@
                     android:id="@+id/tv_forecast_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="4dp"
-                    android:text="Date"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                    android:textSize="20sp"
-                    android:textColor="@color/colorText"
                     android:background="@color/colorPrimary"
+                    android:paddingBottom="4dp"
+                    android:text="@string/date"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="@color/colorText"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
 
                 <!-- Weather Status (Clear, Rainy, etc.) -->
@@ -61,11 +61,11 @@
                     android:id="@+id/tv_weather_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Clear Sky"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/clear_sky"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="@color/colorText"
-                    android:background="@color/colorPrimary"
-                    android:textSize="20sp" />
+                    android:textSize="17sp" />
 
             </LinearLayout>
 
@@ -81,10 +81,10 @@
                     android:id="@+id/tv_max_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Max 25°C"
-                    android:textColor="@color/colorText"
                     android:background="@color/colorPrimary"
-                    android:textSize="20sp"
+                    android:text="@string/max_25_c"
+                    android:textColor="@color/colorText"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
 
                 <!-- Min Temperature -->
@@ -92,10 +92,10 @@
                     android:id="@+id/tv_min_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Min 15°C"
-                    android:textColor="@color/colorText"
                     android:background="@color/colorPrimary"
-                    android:textSize="20sp" />
+                    android:text="@string/min_15_c"
+                    android:textColor="@color/colorText"
+                    android:textSize="17sp" />
 
             </LinearLayout>
 

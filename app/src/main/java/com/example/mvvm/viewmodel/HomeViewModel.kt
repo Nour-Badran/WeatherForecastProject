@@ -31,18 +31,18 @@ class HomeViewModel(
     private val _hourlyWeather = MutableStateFlow<List<HourlyWeather>>(emptyList())
     val hourlyWeather: StateFlow<List<HourlyWeather>> = _hourlyWeather
 
-    fun fetchWeatherData(lat: Double, lon: Double, apiKey: String, units: String) {
+    fun fetchWeatherData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null) {
         viewModelScope.launch {
-            weatherRepository.getWeatherData(lat, lon, apiKey, units)
+            weatherRepository.getWeatherData(lat, lon, apiKey, units,lang)
                 .collect { weatherData ->
                     _weatherData.value = weatherData
                 }
         }
     }
 
-    fun fetchForecastData(lat: Double, lon: Double, apiKey: String, units: String) {
+    fun fetchForecastData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null) {
         viewModelScope.launch {
-            weatherRepository.getForecast(lat, lon, apiKey, units)
+            weatherRepository.getForecast(lat, lon, apiKey, units,lang)
                 .collect { forecast ->
                     if (forecast != null) {
                         _dailyWeather.value = mapDailyWeather(forecast)

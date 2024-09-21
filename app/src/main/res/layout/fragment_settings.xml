@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:textSize="26sp"
                 android:textColor="?attr/colorPrimary"
                 android:textStyle="bold"
@@ -57,9 +57,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="12dp"
-                            android:paddingLeft="16dp"
+                            android:paddingStart="16dp"
                             android:paddingTop="16dp"
-                            android:text="Location"
+                            android:text="@string/location"
                             android:textColor="?attr/colorPrimary"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -72,21 +72,23 @@
                             android:paddingLeft="8dp">
 
                             <RadioButton
+                                android:id="@+id/gps_radio_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?android:attr/selectableItemBackground"
                                 android:buttonTint="?attr/colorPrimary"
                                 android:padding="8dp"
-                                android:text="GPS"
+                                android:text="@string/gps"
                                 android:textColor="?android:attr/textColorPrimary" />
 
                             <RadioButton
+                                android:id="@+id/map_radio_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?android:attr/selectableItemBackground"
                                 android:buttonTint="?attr/colorPrimary"
                                 android:padding="8dp"
-                                android:text="Map"
+                                android:text="@string/map"
                                 android:textColor="?android:attr/textColorPrimary" />
                         </RadioGroup>
                     </LinearLayout>
@@ -103,9 +105,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="12dp"
-                            android:paddingLeft="16dp"
+                            android:paddingStart="16dp"
                             android:paddingTop="16dp"
-                            android:text="Language"
+                            android:text="@string/language"
                             android:textColor="?attr/colorPrimary"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -118,21 +120,23 @@
                             android:paddingLeft="8dp">
 
                             <RadioButton
+                                android:id="@+id/arabic_radio_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?android:attr/selectableItemBackground"
                                 android:buttonTint="?attr/colorPrimary"
                                 android:padding="8dp"
-                                android:text="Arabic"
+                                android:text="@string/arabic"
                                 android:textColor="?android:attr/textColorPrimary" />
 
                             <RadioButton
+                                android:id="@+id/english_radio_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?android:attr/selectableItemBackground"
                                 android:buttonTint="?attr/colorPrimary"
                                 android:padding="8dp"
-                                android:text="English"
+                                android:text="@string/english"
                                 android:textColor="?android:attr/textColorPrimary" />
                         </RadioGroup>
                     </LinearLayout>
@@ -166,9 +170,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="12dp"
-                            android:paddingLeft="16dp"
+                            android:paddingStart="16dp"
                             android:paddingTop="16dp"
-                            android:text="Wind Speed"
+                            android:text="@string/wind_speed"
                             android:textColor="?attr/colorPrimary"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -178,24 +182,26 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:paddingLeft="8dp">
+                            android:paddingStart="8dp">
 
                             <RadioButton
+                                android:id="@+id/meter_sec_radio_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?android:attr/selectableItemBackground"
                                 android:buttonTint="?attr/colorPrimary"
-                                android:paddingLeft="16dp"
-                                android:text="Meter / Sec"
+                                android:paddingStart="16dp"
+                                android:text="@string/meter_sec"
                                 android:textColor="?android:attr/textColorPrimary" />
 
                             <RadioButton
+                                android:id="@+id/mile_hour_radio_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?android:attr/selectableItemBackground"
                                 android:buttonTint="?attr/colorPrimary"
-                                android:paddingLeft="16dp"
-                                android:text="Mile / Hour"
+                                android:paddingStart="16dp"
+                                android:text="@string/mile_hour"
                                 android:textColor="?android:attr/textColorPrimary" />
                         </RadioGroup>
                     </LinearLayout>
@@ -212,10 +218,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="12dp"
-                            android:paddingLeft="16dp"
+                            android:paddingStart="16dp"
                             android:paddingTop="16dp"
-                            android:text="Temperature"
-                            android:textColor="?attr/colorPrimary"
+                            android:text="@string/temperature"
+                            android:textColor="?android:attr/colorPrimary"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -227,30 +233,33 @@
                             android:paddingLeft="8dp">
 
                             <RadioButton
+                                android:id="@+id/celsius_radio_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?android:attr/selectableItemBackground"
                                 android:buttonTint="?attr/colorPrimary"
                                 android:padding="8dp"
-                                android:text="Celsius"
+                                android:text="@string/celsius"
                                 android:textColor="?android:attr/textColorPrimary" />
 
                             <RadioButton
+                                android:id="@+id/kelvin_radio_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?android:attr/selectableItemBackground"
                                 android:buttonTint="?attr/colorPrimary"
                                 android:padding="8dp"
-                                android:text="Kelvin"
+                                android:text="@string/kelvin"
                                 android:textColor="?android:attr/textColorPrimary" />
 
                             <RadioButton
+                                android:id="@+id/fahrenheit_radio_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="?android:attr/selectableItemBackground"
                                 android:buttonTint="?attr/colorPrimary"
                                 android:padding="8dp"
-                                android:text="Fahrenheit"
+                                android:text="@string/fahrenheit"
                                 android:textColor="?android:attr/textColorPrimary" />
                         </RadioGroup>
                     </LinearLayout>
@@ -275,7 +284,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Notifications"
+                        android:text="@string/notifications"
                         android:textSize="20sp"
                         android:textColor="?attr/colorPrimary"
                         android:textStyle="bold"
@@ -286,12 +295,13 @@
                         android:id="@+id/notifications_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Enable"
+                        android:text="@string/enable"
                         android:textColor="?android:attr/textColorPrimary"
                         android:background="?android:attr/selectableItemBackground"
                         android:padding="8dp"
                         android:thumbTint="?attr/colorPrimary"
-                        android:trackTint="?attr/colorControlHighlight" />
+                        android:trackTint="?attr/colorControlHighlight"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

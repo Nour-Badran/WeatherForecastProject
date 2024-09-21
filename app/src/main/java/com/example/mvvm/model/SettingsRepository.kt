@@ -15,4 +15,16 @@ class SettingsRepository(private val localDataSource: SettingsLocalDataSource) {
     fun setWindSpeed(windSpeed: String) = localDataSource.setWindSpeed(windSpeed)
     fun setTemperature(temperature: String) = localDataSource.setTemperature(temperature)
     fun setNotificationsEnabled(enabled: Boolean) = localDataSource.setNotificationsEnabled(enabled)
+
+    fun getLocationId(): Int = localDataSource.getLocationId()
+    fun setLocationId(id: Int) = localDataSource.setLocationId(id)
+
+    fun getLanguageId(): Int = localDataSource.getLanguageId()
+    fun setLanguageId(id: Int) = localDataSource.setLanguageId(id)
+
+    fun getWindSpeedId(): Int = localDataSource.getWindSpeedId()
+    fun setWindSpeedId(id: Int) = localDataSource.setWindSpeedId(id)
+
+    fun getTemperatureId(): Int = localDataSource.getTemperatureId()
+    fun setTemperatureId(id: Int) = localDataSource.setTemperatureId(id)
 }

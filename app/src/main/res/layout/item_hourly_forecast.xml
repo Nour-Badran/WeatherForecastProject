@@ -19,7 +19,7 @@
             android:id="@+id/tv_today_tomorrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Today"
+            android:text="@string/today"
             android:textColor="@color/colorText"
             android:background="@color/colorPrimary"
             android:textSize="16sp" />
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/app"
-            android:text="12 PM"
+            android:text="@string/_12_pm"
             android:textColor="@color/colorText"
             android:background="@color/colorPrimary"
             android:textSize="20sp" />
@@ -40,7 +40,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
-            android:contentDescription="Weather Icon" />
+            android:contentDescription="@string/weather_icon" />
 
         <!-- Temperature -->
         <TextView
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/app"
-            android:text="25°C"
+            android:text="@string/_25_c"
             android:textColor="@color/colorText"
             android:background="@color/colorPrimary"
             android:textSize="20sp" />
