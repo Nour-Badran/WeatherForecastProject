@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withTimeoutOrNull
 
 class WeatherRepository(
     private val context: Context,
@@ -19,24 +20,41 @@ class WeatherRepository(
 
     suspend fun getWeatherData(lat: Double, lon: Double, apiKey: String, units: String): Flow<WeatherData?> = flow {
         val data = if (isConnectedToInternet()) {
-            val remoteData = remoteDataSource.fetchWeatherData(lat, lon, apiKey, units)
-            if (remoteData != null) {
-                localDataSource.saveWeatherData(remoteData)
+            // Set a timeout duration for remote data fetching
+            val remoteData = withTimeoutOrNull(5000L) { // Timeout after 5 seconds
+                remoteDataSource.fetchWeatherData(lat, lon, apiKey, units)
             }
-            emit(remoteData)
+            if (remoteData != null) {
+                // Save data to the local database
+                localDataSource.saveWeatherData(remoteData)
+                emit(remoteData)
+            } else {
+                // Fallback to local data if network is slow or data is null
+                emit(localDataSource.getWeatherData())
+            }
         } else {
+            // Fetch from local database if no internet connection
             emit(localDataSource.getWeatherData())
         }
     }
 
     suspend fun getForecast(lat: Double, lon: Double, apiKey: String, units: String): Flow<FiveDayResponse?> = flow {
         val data = if (isConnectedToInternet()) {
-            val remoteForecast = remoteDataSource.fetchForecast(lat, lon, apiKey, units)
-            if (remoteForecast != null) {
-                localDataSource.saveForecastData(remoteForecast)
+            // Timeout for remote forecast data fetching
+            val remoteForecast = withTimeoutOrNull(5000L) { // Timeout after 5 seconds
+                remoteDataSource.fetchForecast(lat, lon, apiKey, units)
             }
-            emit(remoteForecast)
+            if (remoteForecast != null) {
+                // Save forecast data locally
+                localDataSource.saveForecastData(remoteForecast)
+                emit(remoteForecast)
+            } else {
+                // Fallback to local data if network is slow or data is null
+                val forecast = localDataSource.getForecastData()
+                emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFiveDayResponse() })
+            }
         } else {
+            // Fetch from local database if no internet connection
             val forecast = localDataSource.getForecastData()
             emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFiveDayResponse() })
         }
@@ -90,7 +108,5 @@ class WeatherRepository(
         pop = pop,
         rain = Rain(rainVolume)
     )
-
-
 }
 

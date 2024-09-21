@@ -5,9 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvm.R
 import com.example.mvvm.databinding.FragmentFavouritesBinding
 
@@ -16,14 +15,10 @@ class FavouritesFragment : Fragment() {
     private lateinit var adapter: FavouritePlacesAdapter
     private val placesList = mutableListOf("Place 1", "Place 2", "Place 3") // Sample data
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentFavouritesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -47,10 +42,8 @@ class FavouritesFragment : Fragment() {
 
         // Handle FloatingActionButton click for adding new places
         binding.fab.setOnClickListener {
-            val newPlace = "New Place ${placesList.size + 1}"
-            placesList.add(newPlace)
-            adapter.notifyItemInserted(placesList.size - 1)
-            updateUI(false)
+            // Navigate to MapFragment
+            findNavController().navigate(R.id.action_favouritesFragment_to_mapFragment)
         }
     }
 

@@ -26,7 +26,7 @@ class WeatherRemoteDataSource {
         units: String
     ): WeatherData? {
         return try {
-            val response = weatherService.getWeatherLatLong(lat, apiKey, lon, units)
+            val response = weatherService.getWeatherLatLong(lat, lon,apiKey, units,null)
             if (response.isSuccessful) {
                 response.body()?.let { mapToWeatherData(it) }
             } else {
@@ -44,7 +44,7 @@ class WeatherRemoteDataSource {
         units: String
     ): FiveDayResponse? {
         return try {
-            val response = weatherService.get5DayForecast(lat, apiKey, lon, units)
+            val response = weatherService.get5DayForecast(lat, lon,apiKey,  units,null)
             if (response.isSuccessful) {
                 return response.body()
             } else {
@@ -54,12 +54,4 @@ class WeatherRemoteDataSource {
             null
         }
     }
-
-
-
-
-
-
-
-
 }

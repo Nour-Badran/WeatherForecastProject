@@ -15,14 +15,12 @@ import com.example.mvvm.network.WeatherRemoteDataSource
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
+class HomeViewModel(
+    application: Application,
+    private val weatherRepository: WeatherRepository
+) : AndroidViewModel(application) {
 
     private val weatherDao = WeatherDatabase.getDatabase(application).weatherDao()
-    private val weatherRepository = WeatherRepository(
-        context = application,
-        localDataSource = WeatherLocalDataSource(weatherDao),
-        remoteDataSource = WeatherRemoteDataSource()
-    )
 
     private val _weatherData = MutableStateFlow<WeatherData?>(null)
     val weatherData: StateFlow<WeatherData?> = _weatherData

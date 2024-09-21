@@ -251,7 +251,18 @@
                     </GridLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
+            <!-- Progress Bar for Weather Details -->
+            <ProgressBar
+                android:id="@+id/progress_bar_weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/card_weather_details" />
             <!-- Hourly Forecast Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_hourly_forecast"
@@ -272,7 +283,18 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp" />
             </com.google.android.material.card.MaterialCardView>
-
+            <!-- Progress Bar for Hourly Forecast -->
+            <ProgressBar
+                android:id="@+id/progress_bar_hourly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:indeterminate="true"
+                app:layout_constraintTop_toBottomOf="@id/card_hourly_forecast"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
             <!-- Daily Forecast Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_daily_forecast"
@@ -294,6 +316,20 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp" />
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- Progress Bar for Daily Forecast -->
+            <ProgressBar
+                android:id="@+id/progress_bar_daily"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:indeterminate="true"
+                app:layout_constraintTop_toBottomOf="@id/card_daily_forecast"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
