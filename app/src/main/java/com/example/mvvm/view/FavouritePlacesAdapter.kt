@@ -4,18 +4,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvm.databinding.ItemFavouritePlaceBinding
+import com.example.mvvm.db.FavoritePlaces
 
 class FavouritePlacesAdapter(
-    private val places: MutableList<String>,
+    private val places: MutableList<FavoritePlaces>,
     private val onDeleteClick: (position: Int) -> Unit
 ) : RecyclerView.Adapter<FavouritePlacesAdapter.FavouritePlaceViewHolder>() {
 
     inner class FavouritePlaceViewHolder(private val binding: ItemFavouritePlaceBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(placeName: String, position: Int) {
+        fun bind(placeName: FavoritePlaces, position: Int) {
             // Set the place name
-            binding.placeName.text = placeName
+            binding.placeName.text = placeName.cityName
 
             // Handle delete icon click
             binding.deleteIcon.setOnClickListener {
@@ -42,13 +43,14 @@ class FavouritePlacesAdapter(
         return places.size
     }
 
-    fun removeItem(position: Int) {
-        // Check if the position is valid
-        if (position >= 0 && position < places.size) {
-            places.removeAt(position)
-            notifyItemRemoved(position)
-            notifyItemRangeChanged(position, places.size) // Ensure the adapter updates subsequent items
-        }
+    fun updateList(newPlaces: List<FavoritePlaces>) {
+        places.clear()
+        places.addAll(newPlaces)
+        notifyDataSetChanged()
+    }
+
+    fun getItemAt(position: Int): FavoritePlaces {
+        return places[position]
     }
 
 }

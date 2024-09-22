@@ -6,6 +6,7 @@ import com.example.mvvm.model.Forecast
 import com.example.mvvm.model.WeatherData
 import com.example.mvvm.model.WeatherItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
@@ -36,6 +37,16 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         return withContext(Dispatchers.IO) {
             weatherDao.getForecastData()
         }
+    }
+    suspend fun getAllProducts(): Flow<List<FavoritePlaces>> {
+        return weatherDao.getAll()
+    }
+    suspend fun insertPlace(place: FavoritePlaces) {
+        weatherDao.insert(place)
+    }
+
+    suspend fun deletePlace(place: FavoritePlaces) {
+        weatherDao.delete(place)
     }
 
     private fun WeatherData.toEntity() = WeatherEntity(

@@ -128,7 +128,6 @@
                                 android:layout_marginEnd="8dp"
                                 android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
-                                android:text="@string/visibility_n_a"
                                 android:textColor="@color/colorText"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -157,7 +156,6 @@
                                 android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
                                 android:paddingStart="32dp"
-                                android:text="@string/humidity_50"
                                 android:textColor="@color/colorText"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -185,7 +183,6 @@
                                 android:layout_marginEnd="8dp"
                                 android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
-                                android:text="@string/pressure_1013_hpa"
                                 android:textColor="@color/colorText"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -214,7 +211,6 @@
                                 android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
                                 android:paddingStart="32dp"
-                                android:text="@string/clouds_20"
                                 android:textColor="@color/colorText"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -244,7 +240,6 @@
                             android:layout_marginEnd="8dp"
                             android:background="@color/colorPrimary"
                             android:fontFamily="@font/app"
-                            android:text="@string/wind_speed_5_m_s"
                             android:textColor="@color/colorText"
                             android:textSize="18sp"
                             android:textStyle="bold" />

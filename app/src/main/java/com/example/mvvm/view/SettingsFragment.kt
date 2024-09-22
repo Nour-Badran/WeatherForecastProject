@@ -131,6 +131,11 @@ class SettingsFragment : Fragment(),Refreshable {
                 binding.notificationsSwitch.text = "تفعيل"
             }
         }
+        if (binding.root.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
+            binding.root.layoutDirection = View.LAYOUT_DIRECTION_RTL
+        } else {
+            binding.root.layoutDirection = View.LAYOUT_DIRECTION_LTR
+        }
     }
 
 

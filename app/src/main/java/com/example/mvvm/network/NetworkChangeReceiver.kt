@@ -8,8 +8,11 @@ import android.graphics.Typeface
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import com.example.mvvm.R
 import com.example.mvvm.utilities.customizeSnackbar
 import com.google.android.material.snackbar.Snackbar
+import java.util.Locale
 
 class NetworkChangeReceiver : BroadcastReceiver() {
     var flag: Boolean = true
@@ -19,11 +22,15 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 
         if (context is Activity) {
             val rootView = context.findViewById<View>(android.R.id.content)
-
+            if (Locale.getDefault().language == "ar") {
+                ViewCompat.setLayoutDirection(rootView, ViewCompat.LAYOUT_DIRECTION_RTL)
+            } else {
+                ViewCompat.setLayoutDirection(rootView, ViewCompat.LAYOUT_DIRECTION_LTR)
+            }
             if (isConnected) {
                 if (!flag) {
                     flag = true
-                    val snackbar = Snackbar.make(rootView, "Network connected", Snackbar.LENGTH_SHORT)
+                    val snackbar = Snackbar.make(rootView, context.getString(R.string.network_connected), Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(context.resources.getColor(android.R.color.holo_green_dark))
                         .setTextColor(context.resources.getColor(android.R.color.white))
                     customizeSnackbar(snackbar, context)
@@ -32,7 +39,7 @@ class NetworkChangeReceiver : BroadcastReceiver() {
                 }
             } else {
                 flag = false
-                val snackbar = Snackbar.make(rootView, "Network disconnected", Snackbar.LENGTH_SHORT)
+                val snackbar = Snackbar.make(rootView, context.getString(R.string.network_disconnected), Snackbar.LENGTH_SHORT)
                     .setBackgroundTint(context.resources.getColor(android.R.color.holo_red_dark))
                     .setTextColor(context.resources.getColor(android.R.color.white))
                 customizeSnackbar(snackbar, context)

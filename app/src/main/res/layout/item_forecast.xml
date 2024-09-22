@@ -65,7 +65,7 @@
                     android:text="@string/clear_sky"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="@color/colorText"
-                    android:textSize="17sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 

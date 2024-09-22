@@ -38,7 +38,9 @@
         android:label="fragment_profile">
         <action
             android:id="@+id/action_favouritesFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
+            app:destination="@id/mapFragment"
+            app:popUpTo="@id/FavouritesFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_profileFragment2_to_homeFragment"
             app:destination="@id/homeFragment"
@@ -49,8 +51,12 @@
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.mvvm.MapFragment"
-        tools:layout="@layout/fragment_map" />
+        android:name="com.example.mvvm.view.MapFragment"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_FavouritesFragment"
+            app:destination="@id/FavouritesFragment" />
+    </fragment>
     <fragment
         android:id="@+id/AlertFragment"
         android:name="com.example.mvvm.view.AlertFragment"

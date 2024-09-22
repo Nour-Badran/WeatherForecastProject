@@ -53,4 +53,8 @@
     <string name="no_places">لا توجد أماكن</string>
     <string name="today_label">اليوم</string>
     <string name="tomorrow_label">غداً</string>
+    <string name="network_connected">تم الاتصال بالشبكة</string>
+    <string name="network_disconnected">تم فصل الشبكة</string>
+    <string name="network_status_changed">تم تغيير حالة الشبكة</string>
+    <string name="search_hint">ابحث عن أماكنك المفضلة!</string>
 </resources>

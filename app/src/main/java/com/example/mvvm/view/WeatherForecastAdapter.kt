@@ -47,8 +47,8 @@ class WeatherForecastAdapter(private val selectedLanguage: String,private val se
 
             // Format max and min temperatures
             val numberFormat = NumberFormat.getInstance(if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH)
-            val maxTemp = numberFormat.format(forecast.maxTemp)
-            val minTemp = numberFormat.format(forecast.minTemp)
+            val maxTemp = numberFormat.format(forecast.maxTemp.toInt())
+            val minTemp = numberFormat.format(forecast.minTemp.toInt())
 
             val temperatureUnit = when (tempUnit) {
                 "metric" -> "C"       // Celsius

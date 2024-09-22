@@ -53,4 +53,8 @@
     <string name="no_places">No places</string>
     <string name="today_label">Today</string>
     <string name="tomorrow_label">Tom</string>
+    <string name="network_connected">Network connected</string>
+    <string name="network_disconnected">Network disconnected</string>
+    <string name="network_status_changed">Network status changed</string>
+    <string name="search_hint">Search for your favourite places!</string>
 </resources>

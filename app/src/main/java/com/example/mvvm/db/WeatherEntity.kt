@@ -35,6 +35,9 @@ data class ForecastEntity(
     val icon: String,
     val dtTxt: String
 )
+@Entity(tableName = "favs")
+data class FavoritePlaces(@PrimaryKey val cityName: String,val lat: Double,val lon: Double)
+
 
 
 

@@ -1,16 +1,25 @@
 package com.example.mvvm.utilities
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.example.mvvm.R
+import com.example.mvvm.db.ForecastEntity
+import com.example.mvvm.model.City
+import com.example.mvvm.model.Clouds
 import com.example.mvvm.model.DailyWeather
 import com.example.mvvm.model.FiveDayResponse
 import com.example.mvvm.model.HourlyWeather
+import com.example.mvvm.model.Main
+import com.example.mvvm.model.Rain
 import com.example.mvvm.model.WeatherApiResponse
 import com.example.mvvm.model.WeatherData
+import com.example.mvvm.model.WeatherItem
+import com.example.mvvm.model.Wind
 import com.google.android.material.snackbar.Snackbar
 import java.time.Instant
 import java.time.LocalDate
@@ -146,9 +155,61 @@ fun capitalizeFirstLetter(text: String): String {
 //    // Optionally restart the activity to apply changes
 //    activity?.recreate()
 //}
+fun isConnectedToInternet(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetwork = connectivityManager.activeNetwork ?: return false
+    val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+    return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+            networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+}
+
+
 fun customizeSnackbar(snackbar: Snackbar, context: Context) {
     val textView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
     textView.textSize = 20f // Set text size to 18sp (adjust as needed)
     // Optionally, you can set a custom font if you have one in your assets or resources:
     // textView.typeface = Typeface.createFromAsset(context.assets, "fonts/custom_font.ttf")
 }
+
+// Helper function to map forecast entities back to FiveDayResponse if needed
+ fun List<ForecastEntity>.mapToFiveDayResponse(): FiveDayResponse {
+    return FiveDayResponse(
+        cod = "200",
+        message = 0,
+        cnt = this.size,
+        list = this.map { it.toWeatherItem() },
+        city = City(name = "")
+    )
+}
+ fun ForecastEntity.toWeatherItem() = WeatherItem(
+    dt = dt,
+    main = Main(
+        temp = temp,
+        feelsLike = feelsLike,
+        tempMin = tempMin,
+        tempMax = tempMax,
+        pressure = pressure,
+        humidity = humidity
+    ),
+    weather = listOf(
+        WeatherData(
+        cityName = "",
+        temperature = temp,
+        description = weatherDescription,
+        humidity = humidity,
+        windSpeed = windSpeed,
+        pressure = pressure,
+        clouds = clouds,
+        dt = dt,
+        forecast = emptyList(),
+        iconResId = 0,
+        visibility = 0,
+        icon = icon
+    )
+    ),
+    clouds = Clouds(clouds),
+    wind = Wind(windSpeed),
+    dt_txt = dtTxt, // Use dtTxt
+    pop = pop,
+    rain = Rain(rainVolume)
+)
