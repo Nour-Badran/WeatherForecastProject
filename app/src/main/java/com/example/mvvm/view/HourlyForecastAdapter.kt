@@ -15,7 +15,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HourlyForecastAdapter(private val selectedLanguage: String) :
+class HourlyForecastAdapter(private val selectedLanguage: String,private val selectedTemp: String) :
     RecyclerView.Adapter<HourlyForecastAdapter.HourlyViewHolder>() {
 
     private var hourlyData: List<HourlyWeather> = emptyList()
@@ -28,7 +28,7 @@ class HourlyForecastAdapter(private val selectedLanguage: String) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_hourly_forecast, parent, false)
-        return HourlyViewHolder(view, selectedLanguage)
+        return HourlyViewHolder(view, selectedLanguage, selectedTemp)
     }
 
     override fun getItemCount(): Int = hourlyData.size
@@ -37,7 +37,7 @@ class HourlyForecastAdapter(private val selectedLanguage: String) :
         holder.bind(hourlyData[position])
     }
 
-    inner class HourlyViewHolder(itemView: View, private val language: String) :
+    inner class HourlyViewHolder(itemView: View, private val language: String, private val tempUnit: String) :
         RecyclerView.ViewHolder(itemView) {
 
         private val timeTextView = itemView.findViewById<TextView>(R.id.tv_hour)
@@ -68,11 +68,22 @@ class HourlyForecastAdapter(private val selectedLanguage: String) :
             val numberFormat = NumberFormat.getInstance(locale)
             val formattedTemperature = numberFormat.format(hourlyWeather.temperature.toInt())
 
+            val temperatureUnit = when (tempUnit) {
+                "metric" -> "C"       // Celsius
+                "imperial" -> "F"     // Fahrenheit
+                "standard" -> "K"     // Kelvin
+                else -> "C"
+            }
+
             // Set the localized degree symbol
-            val degreeSymbol = if (language == "ar") "°م" else "°C"
+//            val degreeSymbol = if (language == "ar") "°م" else "°C"
 
             // Set the temperature text
-            tempTextView.text = "$formattedTemperature$degreeSymbol"
+            tempTextView.text = "$formattedTemperature°$temperatureUnit"
+
+
+//            val temperature = NumberFormat.getInstance(if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH)
+//                .format(it.temperature.toInt())
 
             // Determine "Today" or "Tomorrow"
             val currentDate = java.time.LocalDate.now(java.time.ZoneId.systemDefault())

@@ -1,7 +1,9 @@
 package com.example.mvvm.utilities
 
+import android.content.Context
 import android.os.Build
 import android.util.Log
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.example.mvvm.R
 import com.example.mvvm.model.DailyWeather
@@ -9,6 +11,7 @@ import com.example.mvvm.model.FiveDayResponse
 import com.example.mvvm.model.HourlyWeather
 import com.example.mvvm.model.WeatherApiResponse
 import com.example.mvvm.model.WeatherData
+import com.google.android.material.snackbar.Snackbar
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -143,3 +146,9 @@ fun capitalizeFirstLetter(text: String): String {
 //    // Optionally restart the activity to apply changes
 //    activity?.recreate()
 //}
+fun customizeSnackbar(snackbar: Snackbar, context: Context) {
+    val textView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+    textView.textSize = 20f // Set text size to 18sp (adjust as needed)
+    // Optionally, you can set a custom font if you have one in your assets or resources:
+    // textView.typeface = Typeface.createFromAsset(context.assets, "fonts/custom_font.ttf")
+}

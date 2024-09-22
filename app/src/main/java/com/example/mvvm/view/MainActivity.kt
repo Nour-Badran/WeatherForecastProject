@@ -20,9 +20,10 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
     lateinit var db: ActivityHomeBinding
     private lateinit var navController: NavController
-    lateinit var  bottomNavigationView: BottomNavigationView
+    lateinit var bottomNavigationView: BottomNavigationView
     lateinit var networkChangeReceiver: NetworkChangeReceiver
     private lateinit var settingsViewModel: SettingsViewModel
+    private var currentLanguage: String = Locale.getDefault().language // Initial language
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,25 +37,35 @@ class MainActivity : AppCompatActivity() {
         val settingsRepository = SettingsRepository(settingsLocalDataSource)
         val settingsFactory = SettingsViewModelFactory(application, settingsRepository)
         settingsViewModel = ViewModelProvider(this, settingsFactory).get(SettingsViewModel::class.java)
+
+        // Observe language changes
         settingsViewModel.language.observe(this) { language ->
-            if(language.equals("English") || language.equals("الإنجليزية"))
-            {
-                setLocale("en")
+            if (language.equals("English") || language.equals("الإنجليزية")) {
+                updateLocaleIfNeeded("en")
+            } else {
+                updateLocaleIfNeeded("ar")
             }
-            else
-                setLocale("ar")
         }
 
         // Register network receiver
-        intitilaizeNetworkReciever()
+        initializeNetworkReceiver()
     }
+
+    // Update locale only if the new language is different
+    private fun updateLocaleIfNeeded(newLanguage: String) {
+        if (currentLanguage != newLanguage) {
+            setLocale(newLanguage)
+            currentLanguage = newLanguage // Update the current language
+        }
+    }
+
     private fun setLocale(language: String) {
         val locale = Locale(language)
         Locale.setDefault(locale)
         val config = resources.configuration
         config.setLocale(locale)
 
-        // Set layout direction for RTL
+        // Set layout direction for RTL or LTR
         if (language == "ar") {
             config.setLayoutDirection(locale)
         } else {
@@ -63,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
         resources.updateConfiguration(config, resources.displayMetrics)
 
-        // Notify fragments to refresh
+        // Notify fragments to refresh their UI with the new locale
         supportFragmentManager.fragments.forEach { fragment ->
             if (fragment is Refreshable) {
                 fragment.refresh()
@@ -71,8 +82,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun intitilaizeNetworkReciever() {
+    private fun initializeNetworkReceiver() {
         networkChangeReceiver = NetworkChangeReceiver()
         val filter = IntentFilter()
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE")

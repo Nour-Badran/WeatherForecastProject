@@ -16,7 +16,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class WeatherForecastAdapter(private val selectedLanguage: String) :
+class WeatherForecastAdapter(private val selectedLanguage: String,private val selectedTemp: String) :
     ListAdapter<DailyWeather, WeatherForecastAdapter.WeatherViewHolder>(ForecastDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
@@ -26,11 +26,11 @@ class WeatherForecastAdapter(private val selectedLanguage: String) :
     }
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
-        holder.bind(getItem(position), selectedLanguage)
+        holder.bind(getItem(position), selectedLanguage,selectedTemp)
     }
 
     class WeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(forecast: DailyWeather, selectedLanguage: String) {
+        fun bind(forecast: DailyWeather, selectedLanguage: String,tempUnit: String) {
             // Convert Unix timestamp to date
             val dateText = if (adapterPosition == 0) {
                 if (selectedLanguage == "ar") "غداً" else "Tomorrow"
@@ -50,8 +50,15 @@ class WeatherForecastAdapter(private val selectedLanguage: String) :
             val maxTemp = numberFormat.format(forecast.maxTemp)
             val minTemp = numberFormat.format(forecast.minTemp)
 
-            itemView.findViewById<TextView>(R.id.tv_max_temp).text = "${if (selectedLanguage == "ar") "الحد الأقصى" else "Max"} $maxTemp°${if (selectedLanguage == "ar") "م" else "C"}"
-            itemView.findViewById<TextView>(R.id.tv_min_temp).text = "${if (selectedLanguage == "ar") "الحد الأدنى" else "Min"} $minTemp°${if (selectedLanguage == "ar") "م" else "C"}"
+            val temperatureUnit = when (tempUnit) {
+                "metric" -> "C"       // Celsius
+                "imperial" -> "F"     // Fahrenheit
+                "standard" -> "K"     // Kelvin
+                else -> "C"
+            }
+
+            itemView.findViewById<TextView>(R.id.tv_max_temp).text = "${if (selectedLanguage == "ar") "الحد الأقصى" else "Max"} $maxTemp°$temperatureUnit"
+            itemView.findViewById<TextView>(R.id.tv_min_temp).text = "${if (selectedLanguage == "ar") "الحد الأدنى" else "Min"} $minTemp°$temperatureUnit"
 
             // Set weather icon
             itemView.findViewById<ImageView>(R.id.iv_weather_icon).setImageResource(setIcon(forecast.icon))

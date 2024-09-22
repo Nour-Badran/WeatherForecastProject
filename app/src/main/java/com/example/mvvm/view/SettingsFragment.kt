@@ -67,6 +67,7 @@ class SettingsFragment : Fragment(),Refreshable {
             val selectedButton = binding.root.findViewById<RadioButton>(checkedId)
             viewModel.updateLanguage(selectedButton.text.toString(), checkedId)
             viewModel.updateLanguage(selectedButton.text.toString())
+            updateUIForLanguage(selectedButton.text.toString())
         }
 
         binding.windSpeedRadioGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -77,6 +78,7 @@ class SettingsFragment : Fragment(),Refreshable {
         binding.temperatureRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedButton = binding.root.findViewById<RadioButton>(checkedId)
             viewModel.updateTemperature(selectedButton.text.toString(), checkedId)
+            viewModel.updateTemperature(selectedButton.text.toString())
         };
 
         binding.notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -89,6 +91,49 @@ class SettingsFragment : Fragment(),Refreshable {
             group.check(selectedId)
         }
     }
+
+    private fun updateUIForLanguage(language: String) {
+        when (language) {
+            "English", "الإنجليزية" -> {
+                binding.tvTitle.text = "Settings"
+                binding.tvLocation.text = "Location"
+                binding.tvLanguage.text = "Language"
+                binding.tvWindSpeed.text = "Wind Speed"
+                binding.tvTemperature.text = "Temperature"
+                binding.tvNotifications.text = "Notifications"
+                binding.arabicRadioButton.text = "Arabic"
+                binding.englishRadioButton.text = "English"
+                binding.gpsRadioButton.text = "GPS"
+                binding.mapRadioButton.text = "Map"
+                binding.meterSecRadioButton.text = "Meters/Second"
+                binding.mileHourRadioButton.text = "Miles/Hour"
+                binding.celsiusRadioButton.text = "Celsius"
+                binding.kelvinRadioButton.text = "Kelvin"
+                binding.fahrenheitRadioButton.text = "Fahrenheit"
+                binding.notificationsSwitch.text = "Enable"
+            }
+            "Arabic", "العربية" -> {
+                binding.tvTitle.text = "الإعدادات"
+                binding.tvLocation.text = "الموقع"
+                binding.tvLanguage.text = "اللغة"
+                binding.tvWindSpeed.text = "سرعة الرياح"
+                binding.tvTemperature.text = "درجة الحرارة"
+                binding.tvNotifications.text = "الإشعارات"
+                binding.gpsRadioButton.text = "نظام تحديد المواقع"
+                binding.mapRadioButton.text = "خريطة"
+                binding.arabicRadioButton.text = "العربية"
+                binding.englishRadioButton.text = "الإنجليزية"
+                binding.meterSecRadioButton.text = "متر/ثانية"
+                binding.mileHourRadioButton.text = "ميل/ساعة"
+                binding.celsiusRadioButton.text = "سيلسيوس"
+                binding.kelvinRadioButton.text = "كلفن"
+                binding.fahrenheitRadioButton.text = "فهرنهايت"
+                binding.notificationsSwitch.text = "تفعيل"
+            }
+        }
+    }
+
+
 
     override fun refresh() {
 

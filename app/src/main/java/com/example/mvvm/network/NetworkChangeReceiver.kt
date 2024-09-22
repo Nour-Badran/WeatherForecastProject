@@ -8,6 +8,7 @@ import android.graphics.Typeface
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.example.mvvm.utilities.customizeSnackbar
 import com.google.android.material.snackbar.Snackbar
 
 class NetworkChangeReceiver : BroadcastReceiver() {
@@ -43,11 +44,6 @@ class NetworkChangeReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun customizeSnackbar(snackbar: Snackbar, context: Context) {
-        val textView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-        textView.textSize = 20f // Set text size to 18sp (adjust as needed)
-        // Optionally, you can set a custom font if you have one in your assets or resources:
-        // textView.typeface = Typeface.createFromAsset(context.assets, "fonts/custom_font.ttf")
-    }
+
 }
 

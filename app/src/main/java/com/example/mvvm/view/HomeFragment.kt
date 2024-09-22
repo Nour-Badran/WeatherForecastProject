@@ -26,8 +26,10 @@ import com.example.mvvm.db.WeatherLocalDataSource
 import com.example.mvvm.model.SettingsLocalDataSource
 import com.example.mvvm.model.SettingsRepository
 import com.example.mvvm.model.WeatherRepository
+import com.example.mvvm.network.NetworkUtil
 import com.example.mvvm.network.WeatherRemoteDataSource
 import com.example.mvvm.utilities.capitalizeFirstLetter
+import com.example.mvvm.utilities.customizeSnackbar
 import com.example.mvvm.utilities.setIcon
 import com.example.mvvm.viewmodel.HomeViewModelFactory
 import com.example.mvvm.viewmodel.SettingsViewModel
@@ -38,6 +40,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
@@ -51,6 +54,8 @@ class HomeFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var hourlyAdapter: HourlyForecastAdapter
     private var selectedLanguage: String = "en"
+    private var selectedTemp: String = "metric"
+    private var selectedWindSpeed: String = "Meters/Second"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -79,7 +84,19 @@ class HomeFragment : Fragment() {
         observeHourly()
         // Fetch location and weather data
         binding.swipeRefreshLayout.setOnRefreshListener {
-            fetchWeatherData()
+            if (NetworkUtil.isNetworkConnected(requireContext()))
+            {
+                fetchWeatherData()
+            }
+            else
+            {
+                val snackbar = Snackbar.make(binding.root, "No Network", Snackbar.LENGTH_SHORT)
+                    .setBackgroundTint(requireContext().resources.getColor(android.R.color.holo_red_dark))
+                    .setTextColor(requireContext().resources.getColor(android.R.color.white))
+                snackbar.setDuration(4000)
+                customizeSnackbar(snackbar, requireContext())
+                snackbar.show()
+            }
             binding.swipeRefreshLayout.isRefreshing = false
         }
         return binding.root
@@ -100,8 +117,15 @@ class HomeFragment : Fragment() {
                     R.id.english_radio_button -> "en"
                     else -> "null"
                 }
-                viewModel.fetchForecastData(lat, lon, "477840c0a8b416725948f965ee5450ec", "metric", selectedLanguage)
-                viewModel.fetchWeatherData(lat, lon, "477840c0a8b416725948f965ee5450ec", "metric", selectedLanguage)
+                val selectedTempId = settingsViewModel.getTemperatureId()
+                selectedTemp = when (selectedTempId) {
+                    R.id.celsius_radio_button -> "metric"
+                    R.id.kelvin_radio_button -> "standard"
+                    R.id.fahrenheit_radio_button -> "imperial"
+                    else -> "null"
+                }
+                viewModel.fetchForecastData(lat, lon, "477840c0a8b416725948f965ee5450ec", selectedTemp, selectedLanguage)
+                viewModel.fetchWeatherData(lat, lon, "477840c0a8b416725948f965ee5450ec", selectedTemp, selectedLanguage)
 
             } else {
                 Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show()
@@ -132,13 +156,20 @@ class HomeFragment : Fragment() {
             else -> "null"
         }
 
-        forecastAdapter = WeatherForecastAdapter(selectedLanguage)
+        val selectedTempId = settingsViewModel.getTemperatureId()
+        selectedTemp = when (selectedTempId) {
+            R.id.celsius_radio_button -> "metric"
+            R.id.kelvin_radio_button -> "standard"
+            R.id.fahrenheit_radio_button -> "imperial"
+            else -> "null"
+        }
+        forecastAdapter = WeatherForecastAdapter(selectedLanguage,selectedTemp)
         binding.rvDailyForecast.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = forecastAdapter
         }
 
-        hourlyAdapter = HourlyForecastAdapter(selectedLanguage)
+        hourlyAdapter = HourlyForecastAdapter(selectedLanguage,selectedTemp)
         binding.rvHourlyForecast.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = hourlyAdapter
@@ -188,16 +219,26 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.weatherData.collect { weather ->
                 weather?.let {
-                    val date = java.text.SimpleDateFormat("EEE, dd MMM yyyy", java.util.Locale.getDefault())
-                        .format(java.util.Date(it.dt * 1000L))
+                    val currentDateTime = java.text.SimpleDateFormat("EEE, dd MMM yyyy \nhh:mm a", java.util.Locale.getDefault())
+                        .format(java.util.Date())
 
-                    binding.tvDate.text = date
+                    binding.tvDate.text = currentDateTime
+
+
                     binding.tvCityName.text = it.cityName
+
+                    // Determine temperature unit
+                    val temperatureUnit = when (selectedTemp) {
+                        "metric" -> "C"       // Celsius
+                        "imperial" -> "F"     // Fahrenheit
+                        "standard" -> "K"     // Kelvin
+                        else -> "C"
+                    }
 
                     // Format temperature
                     val temperature = NumberFormat.getInstance(if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH)
                         .format(it.temperature.toInt())
-                    binding.tvTemperature.text = "$temperature°${if (selectedLanguage == "ar") "م" else "C"}"
+                    binding.tvTemperature.text = "$temperature°$temperatureUnit"
 
                     // Format visibility, humidity, wind speed, pressure, and clouds
                     val locale = if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH
@@ -219,10 +260,30 @@ class HomeFragment : Fragment() {
                         "الرطوبة: ${numberFormat.format(it.humidity)}%"
                     }
 
-                    binding.tvWindSpeed.text = if (selectedLanguage == "en") {
-                        "Wind Speed: ${numberFormat.format(it.windSpeed)} m/s"
+                    //////////////////
+                    val selectedWindSpeedId = settingsViewModel.getWindSpeedId()
+                    val windSpeedInMps = it.windSpeed
+
+                    selectedWindSpeed = when (selectedWindSpeedId) {
+                        R.id.meter_sec_radio_button -> "Meters/Second"
+                        R.id.mile_hour_radio_button -> "Miles/Hour"
+                        else -> "Meters/Second"
+                    }
+
+                    // Convert wind speed to miles per hour if "m/h" is selected
+                    val windSpeedToDisplay = if (selectedWindSpeed == "Miles/Hour") {
+                        windSpeedInMps * 2.23694  // Convert from m/s to mph
                     } else {
-                        "سرعة الرياح: ${numberFormat.format(it.windSpeed)} م/ث"
+                        windSpeedInMps  // Keep the value in m/s
+                    }
+
+
+
+                    // Set wind speed text dynamically based on language and unit selection
+                    binding.tvWindSpeed.text = if (selectedLanguage == "en") {
+                        "Wind Speed: ${numberFormat.format(windSpeedToDisplay)} $selectedWindSpeed"
+                    } else {
+                        "سرعة الرياح: ${numberFormat.format(windSpeedToDisplay)} ${if (selectedWindSpeed == "Meters/Second") "متر/ثانية" else "ميل/ساعة"}"
                     }
 
                     binding.tvPressure.text = if (selectedLanguage == "en") {

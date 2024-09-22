@@ -57,12 +57,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:background="@color/colorPrimary"
                         android:fontFamily="@font/app"
                         android:gravity="center"
                         android:text="@string/date"
                         android:textColor="@color/colorText"
-                        android:background="@color/colorPrimary"
-                        android:textSize="24sp" />
+                        android:textSize="28sp" />
 
                     <!-- Temperature with Weather Icon -->
                     <LinearLayout
@@ -122,14 +122,13 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/tv_wind_speed"
+                                android:id="@+id/tv_visibility"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="0dp"
                                 android:layout_marginEnd="8dp"
                                 android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
-                                android:text="@string/wind_speed_5_m_s"
+                                android:text="@string/visibility_n_a"
                                 android:textColor="@color/colorText"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -137,8 +136,8 @@
                             <ImageView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:contentDescription="@string/wind_speed_icon"
-                                android:src="@drawable/air_24dp_e8eaed_fill0_wght400_grad0_opsz24" />
+                                android:contentDescription="@string/visibility_icon"
+                                android:src="@drawable/visibility_24dp_e8eaed_fill0_wght400_grad0_opsz24" />
 
                         </LinearLayout>
 
@@ -149,6 +148,7 @@
                             android:layout_margin="8dp"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:id="@+id/tv_humidity"
                                 android:layout_width="wrap_content"
@@ -156,6 +156,7 @@
                                 android:layout_marginEnd="8dp"
                                 android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
+                                android:paddingStart="32dp"
                                 android:text="@string/humidity_50"
                                 android:textColor="@color/colorText"
                                 android:textSize="18sp"
@@ -212,6 +213,7 @@
                                 android:layout_marginEnd="8dp"
                                 android:background="@color/colorPrimary"
                                 android:fontFamily="@font/app"
+                                android:paddingStart="32dp"
                                 android:text="@string/clouds_20"
                                 android:textColor="@color/colorText"
                                 android:textSize="18sp"
@@ -225,32 +227,36 @@
                         </LinearLayout>
 
                         <!-- Visibility -->
-                        <LinearLayout
+                    </GridLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_wind_speed"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="8dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:layout_marginStart="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@color/colorPrimary"
+                            android:fontFamily="@font/app"
+                            android:text="@string/wind_speed_5_m_s"
+                            android:textColor="@color/colorText"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/tv_visibility"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="8dp"
-                                android:background="@color/colorPrimary"
-                                android:fontFamily="@font/app"
-                                android:text="@string/visibility_n_a"
-                                android:textColor="@color/colorText"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:contentDescription="@string/wind_speed_icon"
+                            android:src="@drawable/air_24dp_e8eaed_fill0_wght400_grad0_opsz24" />
 
-                            <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:contentDescription="@string/visibility_icon"
-                                android:src="@drawable/visibility_24dp_e8eaed_fill0_wght400_grad0_opsz24" />
-                        </LinearLayout>
-                    </GridLayout>
+
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <!-- Progress Bar for Weather Details -->
