@@ -76,13 +76,14 @@ class MapFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null && s.length > 2) { // Start searching after 2 characters
+                if (s != null && s.length > 0) {
                     fetchLocationSuggestions(s.toString())
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
 
         citySearch.setOnItemClickListener { parent, _, position, _ ->
             val selectedCity = parent.getItemAtPosition(position).toString()
@@ -117,19 +118,38 @@ class MapFragment : Fragment() {
     private fun fetchLocationSuggestions(query: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val addresses = geocoder.getFromLocationName(query, 5) // Limit results to 5 suggestions
-                val suggestions = addresses?.mapNotNull { it.locality ?: it.featureName }
+                // Use Geocoder to search for location names matching the query
+                val addresses = geocoder.getFromLocationName(query, 5) // Fetch top 5 results
+                val suggestions = addresses?.flatMap { address ->
+                    // Extracting locality, subLocality, featureName, and other address parts
+                    listOfNotNull(
+                        address.locality,
+                        address.subLocality,
+                        address.featureName,
+                        address.adminArea, // Administrative area (e.g., city or state)
+                        address.subAdminArea, // Sub-administrative area (e.g., district)
+                    )
+                }?.distinct() // Remove duplicates
 
+                // Switch to the main thread to update UI
                 withContext(Dispatchers.Main) {
                     adapter.clear()
-                    adapter.addAll(suggestions!!)
-                    adapter.notifyDataSetChanged()
+                    if (!suggestions.isNullOrEmpty()) {
+                        adapter.addAll(suggestions)
+                        adapter.notifyDataSetChanged()
+                    } else {
+                        Toast.makeText(requireContext(), "No suggestions found", Toast.LENGTH_SHORT).show()
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error fetching suggestions", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
+
 
     private fun getLocationFromCityName(city: String, onLocationFound: (GeoPoint?) -> Unit) {
         lifecycleScope.launch(Dispatchers.IO) {

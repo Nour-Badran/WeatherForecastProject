@@ -42,6 +42,11 @@
             app:popUpTo="@id/FavouritesFragment"
             app:popUpToInclusive="true" />
         <action
+            android:id="@+id/action_favouritesFragment_to_placeDetailsFragment"
+            app:destination="@id/placeDetailsFragment"
+            app:popUpTo="@id/FavouritesFragment"
+            app:popUpToInclusive="true" />
+        <action
             android:id="@+id/action_profileFragment2_to_homeFragment"
             app:destination="@id/homeFragment"
             app:enterAnim="@anim/fragment_slide_in_right"
@@ -49,6 +54,21 @@
             app:popEnterAnim="@anim/fragment_slide_in_right"
             app:popExitAnim="@anim/fragment_slide_out_left"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/placeDetailsFragment"
+        android:name="com.example.mvvm.view.PlaceDetailsFragment"
+        tools:layout="@layout/fragment_place_details">
+        <argument
+            android:name="favouritePlace"
+            app:argType="com.example.mvvm.db.FavoritePlaces" />
+        <action
+            android:id="@+id/action_placeDetailsFragment_to_FavouritesFragment"
+            app:destination="@id/FavouritesFragment"
+            app:popUpTo="@id/FavouritesFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.mvvm.view.MapFragment"

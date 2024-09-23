@@ -8,19 +8,23 @@ import com.example.mvvm.db.FavoritePlaces
 
 class FavouritePlacesAdapter(
     private val places: MutableList<FavoritePlaces>,
+    private val onItemClick: (FavoritePlaces) -> Unit,
     private val onDeleteClick: (position: Int) -> Unit
 ) : RecyclerView.Adapter<FavouritePlacesAdapter.FavouritePlaceViewHolder>() {
 
     inner class FavouritePlaceViewHolder(private val binding: ItemFavouritePlaceBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(placeName: FavoritePlaces, position: Int) {
+        fun bind(place: FavoritePlaces, position: Int) {
             // Set the place name
-            binding.placeName.text = placeName.cityName
+            binding.placeName.text = place.cityName
 
             // Handle delete icon click
             binding.deleteIcon.setOnClickListener {
                 onDeleteClick(position)
+            }
+            binding.root.setOnClickListener {
+                onItemClick(place)
             }
         }
     }

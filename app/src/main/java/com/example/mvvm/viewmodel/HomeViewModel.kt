@@ -20,8 +20,6 @@ class HomeViewModel(
     private val weatherRepository: WeatherRepository
 ) : AndroidViewModel(application) {
 
-    private val weatherDao = WeatherDatabase.getDatabase(application).weatherDao()
-
     private val _weatherData = MutableStateFlow<WeatherData?>(null)
     val weatherData: StateFlow<WeatherData?> = _weatherData
 
@@ -31,18 +29,18 @@ class HomeViewModel(
     private val _hourlyWeather = MutableStateFlow<List<HourlyWeather>>(emptyList())
     val hourlyWeather: StateFlow<List<HourlyWeather>> = _hourlyWeather
 
-    fun fetchWeatherData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null) {
+    fun fetchWeatherData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null,favDatabase: Boolean = false) {
         viewModelScope.launch {
-            weatherRepository.getWeatherData(lat, lon, apiKey, units,lang)
+            weatherRepository.getWeatherData(lat, lon, apiKey, units,lang,favDatabase)
                 .collect { weatherData ->
                     _weatherData.value = weatherData
                 }
         }
     }
 
-    fun fetchForecastData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null) {
+    fun fetchForecastData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null,favDatabase: Boolean = false) {
         viewModelScope.launch {
-            weatherRepository.getForecast(lat, lon, apiKey, units,lang)
+            weatherRepository.getForecast(lat, lon, apiKey, units,lang,favDatabase)
                 .collect { forecast ->
                     if (forecast != null) {
                         _dailyWeather.value = mapDailyWeather(forecast)

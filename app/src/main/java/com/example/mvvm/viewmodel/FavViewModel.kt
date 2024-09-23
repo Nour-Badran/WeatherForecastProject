@@ -16,10 +16,9 @@ class FavViewModel(private val repository: WeatherRepository) : ViewModel() {
     private val _favoritePlaces = MutableStateFlow<List<FavoritePlaces>>(emptyList())
     val favoritePlaces: StateFlow<List<FavoritePlaces>> = _favoritePlaces
 
-    // SharedFlow for search queries
+    //.//////////////////////////////////////////////////////////////Search
     private val _searchQuery = MutableSharedFlow<String>(replay = 1)
     val filteredPlaces = _searchQuery
-        .filter { it.isNotEmpty() }
         .map { query ->
             _favoritePlaces.value.filter { place ->
                 place.cityName.startsWith(query, ignoreCase = true)
@@ -27,7 +26,7 @@ class FavViewModel(private val repository: WeatherRepository) : ViewModel() {
         }
     fun resetSearchQuery() {
         viewModelScope.launch {
-            _searchQuery.emit("") // Emit an empty string to show all places
+            _searchQuery.emit("")
         }
     }
 
@@ -36,7 +35,7 @@ class FavViewModel(private val repository: WeatherRepository) : ViewModel() {
             _searchQuery.emit(query)
         }
     }
-
+    /////////////////////////////////////////////////////////
     fun getFavoriteProducts() {
         viewModelScope.launch {
             repository.getFavoriteProducts().collect { favs ->

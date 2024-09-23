@@ -111,6 +111,8 @@ class SettingsFragment : Fragment(),Refreshable {
                 binding.kelvinRadioButton.text = "Kelvin"
                 binding.fahrenheitRadioButton.text = "Fahrenheit"
                 binding.notificationsSwitch.text = "Enable"
+                binding.root.layoutDirection = View.LAYOUT_DIRECTION_LTR
+
             }
             "Arabic", "العربية" -> {
                 binding.tvTitle.text = "الإعدادات"
@@ -129,12 +131,9 @@ class SettingsFragment : Fragment(),Refreshable {
                 binding.kelvinRadioButton.text = "كلفن"
                 binding.fahrenheitRadioButton.text = "فهرنهايت"
                 binding.notificationsSwitch.text = "تفعيل"
+                binding.root.layoutDirection = View.LAYOUT_DIRECTION_RTL
+
             }
-        }
-        if (binding.root.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
-            binding.root.layoutDirection = View.LAYOUT_DIRECTION_RTL
-        } else {
-            binding.root.layoutDirection = View.LAYOUT_DIRECTION_LTR
         }
     }
 

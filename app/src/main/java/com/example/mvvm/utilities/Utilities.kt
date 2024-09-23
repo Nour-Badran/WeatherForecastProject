@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.example.mvvm.R
+import com.example.mvvm.db.FavForecastEntity
 import com.example.mvvm.db.ForecastEntity
 import com.example.mvvm.model.City
 import com.example.mvvm.model.Clouds
@@ -37,12 +38,12 @@ fun setIcon(id: String) : Int {
         "11d" -> R.drawable._11d
         "13d" -> R.drawable._13d
         "50d" -> R.drawable.thunderstorms
-        "01n" -> R.drawable._01n
-        "02n" -> R.drawable._02n
+        "01n" -> R.drawable.img_14
+        "02n" -> R.drawable.img_13
         "03n" -> R.drawable.cloudyday
         "04n" -> R.drawable.cloudyday
         "09n" -> R.drawable.rainyday
-        "10n" -> R.drawable._10n
+        "10n" -> R.drawable.img_15
         "11n" -> R.drawable._11d
         "13n" -> R.drawable._13d
         "50n" -> R.drawable.thunderstorms
@@ -181,6 +182,15 @@ fun customizeSnackbar(snackbar: Snackbar, context: Context) {
         city = City(name = "")
     )
 }
+fun List<FavForecastEntity>.mapToFavFiveDayResponse(): FiveDayResponse {
+    return FiveDayResponse(
+        cod = "200",
+        message = 0,
+        cnt = this.size,
+        list = this.map { it.toFavWeatherItem() },
+        city = City(name = "")
+    )
+}
  fun ForecastEntity.toWeatherItem() = WeatherItem(
     dt = dt,
     main = Main(
@@ -206,6 +216,38 @@ fun customizeSnackbar(snackbar: Snackbar, context: Context) {
         visibility = 0,
         icon = icon
     )
+    ),
+    clouds = Clouds(clouds),
+    wind = Wind(windSpeed),
+    dt_txt = dtTxt, // Use dtTxt
+    pop = pop,
+    rain = Rain(rainVolume)
+)
+fun FavForecastEntity.toFavWeatherItem() = WeatherItem(
+    dt = dt,
+    main = Main(
+        temp = temp,
+        feelsLike = feelsLike,
+        tempMin = tempMin,
+        tempMax = tempMax,
+        pressure = pressure,
+        humidity = humidity
+    ),
+    weather = listOf(
+        WeatherData(
+            cityName = "",
+            temperature = temp,
+            description = weatherDescription,
+            humidity = humidity,
+            windSpeed = windSpeed,
+            pressure = pressure,
+            clouds = clouds,
+            dt = dt,
+            forecast = emptyList(),
+            iconResId = 0,
+            visibility = 0,
+            icon = icon
+        )
     ),
     clouds = Clouds(clouds),
     wind = Wind(windSpeed),

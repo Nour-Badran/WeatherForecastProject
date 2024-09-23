@@ -12,7 +12,7 @@
         <color name="color_default">#E0E0E0</color> <!-- Example: Light Gray -->
         <!-- Stroke color -->
         <color name="color_stroke">#144427</color> <!-- Example: Dark Green -->
-    <color name="colorPrimary">#42A5F5</color> <!-- Sky Blue -->
+    <color name="colorPrimary">#2196F3</color> <!-- Sky Blue -->
 
     <!-- Accent Color -->
     <color name="colorAccent">#FFEB3B</color> <!-- Sun Yellow -->

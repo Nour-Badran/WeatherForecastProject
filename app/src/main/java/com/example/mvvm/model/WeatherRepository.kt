@@ -3,11 +3,13 @@ package com.example.mvvm.model
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.example.mvvm.db.FavForecastEntity
 import com.example.mvvm.db.FavoritePlaces
 import com.example.mvvm.db.ForecastEntity
 import com.example.mvvm.db.WeatherLocalDataSource
 import com.example.mvvm.network.WeatherRemoteDataSource
 import com.example.mvvm.utilities.isConnectedToInternet
+import com.example.mvvm.utilities.mapToFavFiveDayResponse
 import com.example.mvvm.utilities.mapToFiveDayResponse
 import com.example.mvvm.utilities.toWeatherItem
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +38,7 @@ class WeatherRepository(
     suspend fun deleteFavoritePlace(place: FavoritePlaces) {
         localDataSource.deletePlace(place)
     }
-    suspend fun getWeatherData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null): Flow<WeatherData?> = flow {
+    suspend fun getWeatherData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null,favDatabase: Boolean = false): Flow<WeatherData?> = flow {
         val data = if (isConnectedToInternet(context)) {
             // Set a timeout duration for remote data fetching
             val remoteData = withTimeoutOrNull(5000L) { // Timeout after 5 seconds
@@ -44,19 +46,40 @@ class WeatherRepository(
             }
             if (remoteData != null) {
                 // Save data to the local database
-                localDataSource.saveWeatherData(remoteData)
+                if(!favDatabase)
+                {
+                    localDataSource.saveWeatherData(remoteData)
+                }
+                else
+                {
+                    localDataSource.saveFavWeatherData(remoteData)  //handle fav
+                }
                 emit(remoteData)
             } else {
                 // Fallback to local data if network is slow or data is null
-                emit(localDataSource.getWeatherData())
+                if(!favDatabase)
+                {
+                    emit(localDataSource.getWeatherData())
+                }
+                else
+                {
+                    emit(localDataSource.getFavWeatherData()) // handle fav
+                }
             }
         } else {
             // Fetch from local database if no internet connection
-            emit(localDataSource.getWeatherData())
+            if(!favDatabase)
+            {
+                emit(localDataSource.getWeatherData())
+            }
+            else
+            {
+                emit(localDataSource.getFavWeatherData()) //handle fav
+            }
         }
     }.shareIn(CoroutineScope(Dispatchers.Default), SharingStarted.Lazily)
 
-    suspend fun getForecast(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null): Flow<FiveDayResponse?> = flow {
+    suspend fun getForecast(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null,favDatabase: Boolean = false): Flow<FiveDayResponse?> = flow {
         val data = if (isConnectedToInternet(context)) {
             // Timeout for remote forecast data fetching
             val remoteForecast = withTimeoutOrNull(5000L) { // Timeout after 5 seconds
@@ -64,18 +87,45 @@ class WeatherRepository(
             }
             if (remoteForecast != null) {
                 // Save forecast data locally
-                localDataSource.saveForecastData(remoteForecast)
+                if(!favDatabase)
+                {
+                    localDataSource.saveForecastData(remoteForecast)
+                }
+                else
+                {
+                    localDataSource.saveFavForecastData(remoteForecast) // handle fav
+                }
                 emit(remoteForecast)
             } else {
                 // Fallback to local data if network is slow or data is null
-                val forecast = localDataSource.getForecastData()
-                emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFiveDayResponse() })
+                if(!favDatabase)
+                {
+                    val forecast: List<ForecastEntity>
+                    forecast = localDataSource.getForecastData()
+                    emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFiveDayResponse() })
+                }
+                else
+                {
+                    val forecast: List<FavForecastEntity>
+                    forecast = localDataSource.getFavForecastData()  // handle fav
+                    emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFavFiveDayResponse() })
+                }
             }
         } else {
             // Fetch from local database if no internet connection
-            val forecast = localDataSource.getForecastData()
-            emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFiveDayResponse() })
+            if(!favDatabase)
+            {
+                val forecast: List<ForecastEntity>
+                forecast = localDataSource.getForecastData()
+                emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFiveDayResponse() })
+            }
+            else
+            {
+                val forecast: List<FavForecastEntity>
+                forecast = localDataSource.getFavForecastData() // handle fav
+                emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFavFiveDayResponse() })
+            }
         }
-    }.shareIn(CoroutineScope(Dispatchers.Default), SharingStarted.Lazily)
+    }
 }
 

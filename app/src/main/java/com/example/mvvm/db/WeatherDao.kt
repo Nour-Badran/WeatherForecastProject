@@ -37,4 +37,22 @@ interface WeatherDao {
     @Delete
     suspend fun delete(favorite: FavoritePlaces)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFavWeatherData(favWeatherEntity: FavWeatherEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFavForecastData(forecastEntities: List<FavForecastEntity>)
+
+    @Query("SELECT * FROM favWeather LIMIT 1")
+    suspend fun getFavWeatherData(): FavWeatherEntity?
+
+    @Query("SELECT * FROM favForecast")
+    suspend fun getFavForecastData(): List<FavForecastEntity>
+
+    @Query("DELETE FROM favWeather")
+    suspend fun deleteAllFavWeatherData()
+
+    @Query("DELETE FROM favForecast")
+    suspend fun deleteAllFavForecastData()
+
 }
