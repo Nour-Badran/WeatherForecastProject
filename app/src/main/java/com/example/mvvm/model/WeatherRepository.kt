@@ -1,8 +1,6 @@
 package com.example.mvvm.model
 
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import com.example.mvvm.db.FavForecastEntity
 import com.example.mvvm.db.FavoritePlaces
 import com.example.mvvm.db.ForecastEntity
@@ -11,14 +9,11 @@ import com.example.mvvm.network.WeatherRemoteDataSource
 import com.example.mvvm.utilities.isConnectedToInternet
 import com.example.mvvm.utilities.mapToFavFiveDayResponse
 import com.example.mvvm.utilities.mapToFiveDayResponse
-import com.example.mvvm.utilities.toWeatherItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -27,7 +22,7 @@ class WeatherRepository(
     private val localDataSource: WeatherLocalDataSource,
     private val remoteDataSource: WeatherRemoteDataSource
 ) {
-     suspend fun getFavoriteProducts(): Flow<List<FavoritePlaces>> {
+    fun getFavPlaces(): Flow<List<FavoritePlaces>> {
         return localDataSource.getAllProducts()
     }
 

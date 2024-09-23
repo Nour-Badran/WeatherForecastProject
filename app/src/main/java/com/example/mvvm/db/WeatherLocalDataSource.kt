@@ -5,6 +5,10 @@ import com.example.mvvm.model.FiveDayResponse
 import com.example.mvvm.model.Forecast
 import com.example.mvvm.model.WeatherData
 import com.example.mvvm.model.WeatherItem
+import com.example.mvvm.utilities.toEntity
+import com.example.mvvm.utilities.toFavEntity
+import com.example.mvvm.utilities.toFavModel
+import com.example.mvvm.utilities.toModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -63,7 +67,7 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
             weatherDao.getFavForecastData()
         }
     }
-    suspend fun getAllProducts(): Flow<List<FavoritePlaces>> {
+    fun getAllProducts(): Flow<List<FavoritePlaces>> {
         return weatherDao.getAll()
     }
     suspend fun insertPlace(place: FavoritePlaces) {
@@ -73,92 +77,4 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
     suspend fun deletePlace(place: FavoritePlaces) {
         weatherDao.delete(place)
     }
-
-    private fun WeatherData.toEntity() = WeatherEntity(
-        cityName = cityName,
-        temperature = temperature,
-        description = description,
-        humidity = humidity,
-        windSpeed = windSpeed,
-        pressure = pressure,
-        clouds = clouds,
-        dt = dt,
-        visibility = visibility,
-        iconResId = iconResId,
-        icon = icon
-    )
-    private fun WeatherData.toFavEntity() = FavWeatherEntity(
-        cityName = cityName,
-        temperature = temperature,
-        description = description,
-        humidity = humidity,
-        windSpeed = windSpeed,
-        pressure = pressure,
-        clouds = clouds,
-        dt = dt,
-        visibility = visibility,
-        iconResId = iconResId,
-        icon = icon
-    )
-    private fun WeatherEntity.toModel() = WeatherData(
-        cityName = cityName,
-        temperature = temperature,
-        description = description,
-        humidity = humidity,
-        windSpeed = windSpeed,
-        pressure = pressure,
-        clouds = clouds,
-        dt = dt,
-        visibility = visibility,
-        iconResId = iconResId,
-        forecast = emptyList(),
-        icon = icon
-    )
-    private fun FavWeatherEntity.toFavModel() = WeatherData(
-        cityName = cityName,
-        temperature = temperature,
-        description = description,
-        humidity = humidity,
-        windSpeed = windSpeed,
-        pressure = pressure,
-        clouds = clouds,
-        dt = dt,
-        visibility = visibility,
-        iconResId = iconResId,
-        forecast = emptyList(),
-        icon = icon
-    )
-    private fun WeatherItem.toEntity() = ForecastEntity(
-        dt = dt,
-        temp = main.temp,
-        feelsLike = main.feelsLike,
-        tempMin = main.tempMin,
-        tempMax = main.tempMax,
-        pressure = main.pressure,
-        humidity = main.humidity,
-        windSpeed = wind.speed,
-        clouds = clouds.all,
-        pop = pop,
-        rainVolume = rain?.volume ?: 0.0, // Provide a default value if rain is null
-        weatherDescription = weather.firstOrNull()?.description ?: "",
-        icon = weather.firstOrNull()?.icon ?: "",
-        dtTxt = dt_txt
-    )
-    private fun WeatherItem.toFavEntity() = FavForecastEntity(
-        dt = dt,
-        temp = main.temp,
-        feelsLike = main.feelsLike,
-        tempMin = main.tempMin,
-        tempMax = main.tempMax,
-        pressure = main.pressure,
-        humidity = main.humidity,
-        windSpeed = wind.speed,
-        clouds = clouds.all,
-        pop = pop,
-        rainVolume = rain?.volume ?: 0.0, // Provide a default value if rain is null
-        weatherDescription = weather.firstOrNull()?.description ?: "",
-        icon = weather.firstOrNull()?.icon ?: "",
-        dtTxt = dt_txt
-    )
-
 }

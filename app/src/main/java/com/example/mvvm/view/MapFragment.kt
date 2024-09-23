@@ -66,7 +66,7 @@ class MapFragment : Fragment() {
         mapView.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(true)
         mapView.controller.setZoom(15.0)
-        mapView.controller.setCenter(GeoPoint(29.9792, 31.1342)) // Default center at Giza
+        mapView.controller.setCenter(GeoPoint(30.0, 31.1342)) // Default center at Giza
 
         // Set up AutoCompleteTextView with dynamic location suggestions
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())

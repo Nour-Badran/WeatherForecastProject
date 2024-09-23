@@ -12,14 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mvvm.R
 import com.example.mvvm.databinding.FragmentFavouritesBinding
-import com.example.mvvm.db.FavoritePlaces
 import com.example.mvvm.db.WeatherDatabase
 import com.example.mvvm.db.WeatherLocalDataSource
 import com.example.mvvm.model.WeatherRepository
 import com.example.mvvm.network.WeatherRemoteDataSource
 import com.example.mvvm.viewmodel.FavPlacesViewModelFactory
 import com.example.mvvm.viewmodel.FavViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FavouritesFragment : Fragment() {
@@ -64,7 +62,7 @@ class FavouritesFragment : Fragment() {
             },
             onDeleteClick = { position ->
                 val placeToRemove = adapter.getItemAt(position)
-                viewModel.removeFavorite(placeToRemove)
+                viewModel.removePlace(placeToRemove)
                 updateUI(adapter.itemCount == 0)
             }
         )
@@ -86,7 +84,7 @@ class FavouritesFragment : Fragment() {
             }
         }
 
-        viewModel.getFavoriteProducts()
+        viewModel.getFavoritePlaces()
 
         binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {

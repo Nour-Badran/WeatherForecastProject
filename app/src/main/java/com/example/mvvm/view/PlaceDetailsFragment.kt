@@ -209,10 +209,12 @@ class PlaceDetailsFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.weatherData.collect { weather ->
                 weather?.let {
-                    val currentDateTime = java.text.SimpleDateFormat("EEE, dd MMM yyyy \nhh:mm a", java.util.Locale.getDefault())
-                        .format(java.util.Date())
+                    val timestamp = it.dt * 1000L  // Convert seconds to milliseconds
 
-                    binding.tvDate.text = currentDateTime
+                    val formattedDateTime = java.text.SimpleDateFormat("EEE, dd MMM yyyy \nhh:mm a", java.util.Locale.getDefault())
+                        .format(java.util.Date(timestamp))
+
+                    binding.tvDate.text = formattedDateTime
 
 
                     binding.tvCityName.text = it.cityName

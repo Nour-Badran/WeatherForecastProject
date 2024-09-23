@@ -9,6 +9,7 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.mvvm.R
 import com.example.mvvm.databinding.FragmentSettingsBinding
 import com.example.mvvm.model.SettingsLocalDataSource
 import com.example.mvvm.model.SettingsRepository
@@ -61,6 +62,10 @@ class SettingsFragment : Fragment(),Refreshable {
         binding.locationRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedButton = binding.root.findViewById<RadioButton>(checkedId)
             viewModel.updateLocation(selectedButton.text.toString(), checkedId)
+            ///////////////////////////////////////////////
+            if (selectedButton.id == R.id.map_radio_button) {
+                Toast.makeText(requireContext(), "MAP", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.languageRadioGroup.setOnCheckedChangeListener { _, checkedId ->

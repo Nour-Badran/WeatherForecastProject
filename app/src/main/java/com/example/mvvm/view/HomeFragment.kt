@@ -55,6 +55,7 @@ class HomeFragment : Fragment() {
     private var selectedLanguage: String = "en"
     private var selectedTemp: String = "metric"
     private var selectedWindSpeed: String = "Meters/Second"
+    private var selectedLocation: String = "GPS"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreateView(
@@ -107,30 +108,42 @@ class HomeFragment : Fragment() {
     }
     private fun fetchWeatherData() {
         showOverallLoading()
-        getCurrentLocation { lat, lon ->
-            if (lat != null && lon != null) {
-                // Fetch the language setting based on the selected RadioButton ID
-                val selectedLanguageId = settingsViewModel.getLanguageId()
-                 selectedLanguage = when (selectedLanguageId) {
-                    R.id.arabic_radio_button -> "ar"
-                    R.id.english_radio_button -> "en"
-                    else -> "null"
-                }
-                val selectedTempId = settingsViewModel.getTemperatureId()
-                selectedTemp = when (selectedTempId) {
-                    R.id.celsius_radio_button -> "metric"
-                    R.id.kelvin_radio_button -> "standard"
-                    R.id.fahrenheit_radio_button -> "imperial"
-                    else -> "null"
-                }
-                viewModel.fetchForecastData(lat, lon, "477840c0a8b416725948f965ee5450ec", selectedTemp, selectedLanguage)
-                viewModel.fetchWeatherData(lat, lon, "477840c0a8b416725948f965ee5450ec", selectedTemp, selectedLanguage)
-
-            } else {
-                Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show()
-            }
-            hideOverallLoading()
+        val selectedLocationId = settingsViewModel.getLocationId()
+        selectedLocation = when (selectedLocationId) {
+            R.id.gps_radio_button -> "GPS"
+            R.id.map_radio_button -> "Map"
+            else -> "GPS"
         }
+        if(selectedLocation == "GPS")
+        {
+            getCurrentLocation { lat, lon ->
+                if (lat != null && lon != null) {
+                    val selectedLanguageId = settingsViewModel.getLanguageId()
+                    selectedLanguage = when (selectedLanguageId) {
+                        R.id.arabic_radio_button -> "ar"
+                        R.id.english_radio_button -> "en"
+                        else -> "null"
+                    }
+                    val selectedTempId = settingsViewModel.getTemperatureId()
+                    selectedTemp = when (selectedTempId) {
+                        R.id.celsius_radio_button -> "metric"
+                        R.id.kelvin_radio_button -> "standard"
+                        R.id.fahrenheit_radio_button -> "imperial"
+                        else -> "null"
+                    }
+                    viewModel.fetchForecastData(lat, lon, "477840c0a8b416725948f965ee5450ec", selectedTemp, selectedLanguage)
+                    viewModel.fetchWeatherData(lat, lon, "477840c0a8b416725948f965ee5450ec", selectedTemp, selectedLanguage)
+
+                } else {
+                    Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        else
+        {
+            Toast.makeText(requireContext(), "Implement el MAP", Toast.LENGTH_SHORT).show()
+        }
+        hideOverallLoading()
     }
 
 
@@ -218,10 +231,12 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.weatherData.collect { weather ->
                 weather?.let {
-                    val currentDateTime = java.text.SimpleDateFormat("EEE, dd MMM yyyy \nhh:mm a", java.util.Locale.getDefault())
-                        .format(java.util.Date())
+                    val timestamp = it.dt * 1000L  // Convert seconds to milliseconds
 
-                    binding.tvDate.text = currentDateTime
+                    val formattedDateTime = java.text.SimpleDateFormat("EEE, dd MMM yyyy \nhh:mm a", java.util.Locale.getDefault())
+                        .format(java.util.Date(timestamp))
+
+                    binding.tvDate.text = formattedDateTime
 
 
                     binding.tvCityName.text = it.cityName

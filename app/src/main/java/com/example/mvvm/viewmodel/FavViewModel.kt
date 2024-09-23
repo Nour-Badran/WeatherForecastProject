@@ -7,7 +7,6 @@ import com.example.mvvm.model.WeatherRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -36,24 +35,24 @@ class FavViewModel(private val repository: WeatherRepository) : ViewModel() {
         }
     }
     /////////////////////////////////////////////////////////
-    fun getFavoriteProducts() {
+    fun getFavoritePlaces() {
         viewModelScope.launch {
-            repository.getFavoriteProducts().collect { favs ->
+            repository.getFavPlaces().collect { favs ->
                 _favoritePlaces.value = favs
             }
         }
     }
 
-    fun removeFavorite(place: FavoritePlaces) {
+    fun removePlace(place: FavoritePlaces) {
         viewModelScope.launch {
             repository.deleteFavoritePlace(place)
-            getFavoriteProducts()
+            getFavoritePlaces()
         }
     }
     fun addPlace(place: FavoritePlaces) {
         viewModelScope.launch {
             repository.insertFavoritePlace(place) // Implement this in your repository
-            getFavoriteProducts() // Refresh the list
+            getFavoritePlaces() // Refresh the list
         }
     }
 }

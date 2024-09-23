@@ -9,7 +9,9 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.example.mvvm.R
 import com.example.mvvm.db.FavForecastEntity
+import com.example.mvvm.db.FavWeatherEntity
 import com.example.mvvm.db.ForecastEntity
+import com.example.mvvm.db.WeatherEntity
 import com.example.mvvm.model.City
 import com.example.mvvm.model.Clouds
 import com.example.mvvm.model.DailyWeather
@@ -146,16 +148,6 @@ fun mapHourlyWeatherForTodayAndTomorrow(response: FiveDayResponse): List<HourlyW
 fun capitalizeFirstLetter(text: String): String {
     return text.split(" ").joinToString(" ") { it.capitalize() }
 }
-//fun setLocale(language: String) {
-//    val locale = Locale(language)
-//    Locale.setDefault(locale)
-//    val config = resources.configuration
-//    config.setLocale(locale)
-//    resources.updateConfiguration(config, resources.displayMetrics)
-//
-//    // Optionally restart the activity to apply changes
-//    activity?.recreate()
-//}
 fun isConnectedToInternet(context: Context): Boolean {
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val activeNetwork = connectivityManager.activeNetwork ?: return false
@@ -173,7 +165,7 @@ fun customizeSnackbar(snackbar: Snackbar, context: Context) {
 }
 
 // Helper function to map forecast entities back to FiveDayResponse if needed
- fun List<ForecastEntity>.mapToFiveDayResponse(): FiveDayResponse {
+fun List<ForecastEntity>.mapToFiveDayResponse(): FiveDayResponse {
     return FiveDayResponse(
         cod = "200",
         message = 0,
@@ -191,7 +183,7 @@ fun List<FavForecastEntity>.mapToFavFiveDayResponse(): FiveDayResponse {
         city = City(name = "")
     )
 }
- fun ForecastEntity.toWeatherItem() = WeatherItem(
+fun ForecastEntity.toWeatherItem() = WeatherItem(
     dt = dt,
     main = Main(
         temp = temp,
@@ -203,19 +195,19 @@ fun List<FavForecastEntity>.mapToFavFiveDayResponse(): FiveDayResponse {
     ),
     weather = listOf(
         WeatherData(
-        cityName = "",
-        temperature = temp,
-        description = weatherDescription,
-        humidity = humidity,
-        windSpeed = windSpeed,
-        pressure = pressure,
-        clouds = clouds,
-        dt = dt,
-        forecast = emptyList(),
-        iconResId = 0,
-        visibility = 0,
-        icon = icon
-    )
+            cityName = "",
+            temperature = temp,
+            description = weatherDescription,
+            humidity = humidity,
+            windSpeed = windSpeed,
+            pressure = pressure,
+            clouds = clouds,
+            dt = dt,
+            forecast = emptyList(),
+            iconResId = 0,
+            visibility = 0,
+            icon = icon
+        )
     ),
     clouds = Clouds(clouds),
     wind = Wind(windSpeed),
@@ -254,4 +246,91 @@ fun FavForecastEntity.toFavWeatherItem() = WeatherItem(
     dt_txt = dtTxt, // Use dtTxt
     pop = pop,
     rain = Rain(rainVolume)
+)
+
+ fun WeatherData.toEntity() = WeatherEntity(
+    cityName = cityName,
+    temperature = temperature,
+    description = description,
+    humidity = humidity,
+    windSpeed = windSpeed,
+    pressure = pressure,
+    clouds = clouds,
+    dt = dt,
+    visibility = visibility,
+    iconResId = iconResId,
+    icon = icon
+)
+ fun WeatherData.toFavEntity() = FavWeatherEntity(
+    cityName = cityName,
+    temperature = temperature,
+    description = description,
+    humidity = humidity,
+    windSpeed = windSpeed,
+    pressure = pressure,
+    clouds = clouds,
+    dt = dt,
+    visibility = visibility,
+    iconResId = iconResId,
+    icon = icon
+)
+ fun WeatherEntity.toModel() = WeatherData(
+    cityName = cityName,
+    temperature = temperature,
+    description = description,
+    humidity = humidity,
+    windSpeed = windSpeed,
+    pressure = pressure,
+    clouds = clouds,
+    dt = dt,
+    visibility = visibility,
+    iconResId = iconResId,
+    forecast = emptyList(),
+    icon = icon
+)
+ fun FavWeatherEntity.toFavModel() = WeatherData(
+    cityName = cityName,
+    temperature = temperature,
+    description = description,
+    humidity = humidity,
+    windSpeed = windSpeed,
+    pressure = pressure,
+    clouds = clouds,
+    dt = dt,
+    visibility = visibility,
+    iconResId = iconResId,
+    forecast = emptyList(),
+    icon = icon
+)
+ fun WeatherItem.toEntity() = ForecastEntity(
+    dt = dt,
+    temp = main.temp,
+    feelsLike = main.feelsLike,
+    tempMin = main.tempMin,
+    tempMax = main.tempMax,
+    pressure = main.pressure,
+    humidity = main.humidity,
+    windSpeed = wind.speed,
+    clouds = clouds.all,
+    pop = pop,
+    rainVolume = rain?.volume ?: 0.0, // Provide a default value if rain is null
+    weatherDescription = weather.firstOrNull()?.description ?: "",
+    icon = weather.firstOrNull()?.icon ?: "",
+    dtTxt = dt_txt
+)
+ fun WeatherItem.toFavEntity() = FavForecastEntity(
+    dt = dt,
+    temp = main.temp,
+    feelsLike = main.feelsLike,
+    tempMin = main.tempMin,
+    tempMax = main.tempMax,
+    pressure = main.pressure,
+    humidity = main.humidity,
+    windSpeed = wind.speed,
+    clouds = clouds.all,
+    pop = pop,
+    rainVolume = rain?.volume ?: 0.0, // Provide a default value if rain is null
+    weatherDescription = weather.firstOrNull()?.description ?: "",
+    icon = weather.firstOrNull()?.icon ?: "",
+    dtTxt = dt_txt
 )
