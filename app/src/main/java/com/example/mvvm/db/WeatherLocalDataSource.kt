@@ -30,14 +30,14 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         }
     }
 
-    suspend fun getWeatherData(): WeatherData? {
+    suspend fun getWeatherData(): Flow<WeatherData> {
         return withContext(Dispatchers.IO) {
             val entity = weatherDao.getWeatherData()
-            entity?.toModel()
+            entity.toModel()
         }
     }
 
-    suspend fun getForecastData(): List<ForecastEntity> {
+    suspend fun getForecastData(): Flow<List<ForecastEntity>> {
         return withContext(Dispatchers.IO) {
             weatherDao.getForecastData()
         }

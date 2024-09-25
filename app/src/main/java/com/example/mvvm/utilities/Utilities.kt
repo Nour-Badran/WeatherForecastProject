@@ -24,6 +24,8 @@ import com.example.mvvm.model.WeatherData
 import com.example.mvvm.model.WeatherItem
 import com.example.mvvm.model.Wind
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -274,20 +276,23 @@ fun FavForecastEntity.toFavWeatherItem() = WeatherItem(
     iconResId = iconResId,
     icon = icon
 )
- fun WeatherEntity.toModel() = WeatherData(
-    cityName = cityName,
-    temperature = temperature,
-    description = description,
-    humidity = humidity,
-    windSpeed = windSpeed,
-    pressure = pressure,
-    clouds = clouds,
-    dt = dt,
-    visibility = visibility,
-    iconResId = iconResId,
-    forecast = emptyList(),
-    icon = icon
-)
+fun Flow<WeatherEntity>.toModel(): Flow<WeatherData> = this.map { entity ->
+    WeatherData(
+        cityName = entity.cityName ?: "Unknown",       // Handle nullability with defaults
+        temperature = entity.temperature ?: 0.0,
+        description = entity.description ?: "No description",
+        humidity = entity.humidity ?: 0,
+        windSpeed = entity.windSpeed ?: 0.0,
+        pressure = entity.pressure ?: 0,
+        clouds = entity.clouds ?: 0,
+        dt = entity.dt ?: 0L,
+        visibility = entity.visibility ?: 0,
+        iconResId = entity.iconResId ?: 0,
+        forecast = emptyList(),    // Set forecast to empty list for now
+        icon = entity.icon ?: ""
+    )
+}
+
  fun FavWeatherEntity.toFavModel() = WeatherData(
     cityName = cityName,
     temperature = temperature,

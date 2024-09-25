@@ -17,10 +17,10 @@ interface WeatherDao {
     suspend fun insertForecastData(forecastEntities: List<ForecastEntity>)
 
     @Query("SELECT * FROM weather LIMIT 1")
-    suspend fun getWeatherData(): WeatherEntity?
+    fun getWeatherData(): Flow<WeatherEntity>
 
     @Query("SELECT * FROM forecast")
-    suspend fun getForecastData(): List<ForecastEntity>
+    fun getForecastData(): Flow<List<ForecastEntity>>
 
     @Query("DELETE FROM weather")
     suspend fun deleteAllWeatherData()

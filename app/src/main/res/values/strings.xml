@@ -57,4 +57,5 @@
     <string name="network_disconnected">Network disconnected</string>
     <string name="network_status_changed">Network status changed</string>
     <string name="search_hint">Search for your favourite places!</string>
+    <string name="no_network">"No Network"</string>
 </resources>

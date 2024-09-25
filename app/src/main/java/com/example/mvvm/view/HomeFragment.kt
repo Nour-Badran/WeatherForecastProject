@@ -1,7 +1,9 @@
 package com.example.mvvm.view
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -37,10 +39,17 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
+import android.provider.Settings
+import android.view.Gravity
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import java.util.Locale
 
 class HomeFragment : Fragment() {
@@ -52,7 +61,6 @@ class HomeFragment : Fragment() {
     private lateinit var hourlyAdapter: HourlyForecastAdapter
     private var selectedLanguage: String = "en"
     private var selectedTemp: String = "metric"
-    private var selectedWindSpeed: String = "Meters/Second"
     private var selectedLocation: String = "GPS"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +103,7 @@ class HomeFragment : Fragment() {
             }
             else
             {
-                val snackbar = Snackbar.make(binding.root, "No Network", Snackbar.LENGTH_SHORT)
+                val snackbar = Snackbar.make(binding.root,R.string.no_network, Snackbar.LENGTH_SHORT)
                     .setBackgroundTint(requireContext().resources.getColor(android.R.color.holo_red_dark))
                     .setTextColor(requireContext().resources.getColor(android.R.color.white))
                 snackbar.setDuration(4000)
@@ -362,18 +370,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-        lifecycleScope.launch {
-            viewModel.isLocalDataUsed.collect { isLocal ->
-                if (isLocal) {
-                    val snackbar2 = Snackbar.make(binding.root, "Please check your internet connection to get the latest weather updates!", Snackbar.LENGTH_SHORT)
-                        .setBackgroundTint(requireContext().resources.getColor(android.R.color.holo_red_dark))
-                        .setTextColor(requireContext().resources.getColor(android.R.color.white))
-                    snackbar2.setDuration(4000)
-                    customizeSnackbar(snackbar2, requireContext())
-                    snackbar2.show()
-                }
-            }
-        }
     }
 
 
@@ -433,8 +429,30 @@ class HomeFragment : Fragment() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 fetchWeatherData()
             } else {
-                Toast.makeText(requireContext(), "Location permission is required", Toast.LENGTH_SHORT).show()
+                val snackbar = Snackbar.make(
+                    requireView(),
+                    "Location permission is required",
+                    Snackbar.LENGTH_LONG
+                )
+
+                // Customize the text size of the Snackbar message
+                val snackbarView = snackbar.view
+                val snackbarTextView = snackbarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+                snackbarTextView.textSize = 18f  // Increase text size
+                snackbarTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.white)) // Text color
+                snackbarTextView.maxLines = 3 // Allow multiple lines if needed
+
+                // Add action to open app settings
+                snackbar.setAction("Settings") {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", requireContext().packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                }.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+
+                snackbar.show()
             }
         }
     }
+
 }
