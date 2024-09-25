@@ -65,4 +65,16 @@
     <string name="unable">Unable to get location</string>
     <string name="hourly">Failed to load hourly weather</string>
     <string name="daily">Failed to load daily weather</string>
+    <string name="confirm_deletion_title">Confirm Deletion</string>
+    <string name="confirm_deletion_message">Are you sure you want to delete this place?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="save_location_title">Save Location</string>
+    <string name="save_location_message">Do you want to save %1$s to favorites?</string>
+    <string name="favorite_saved_message">%1$s saved to favorites!</string>
+    <string name="save_default_location_message">Do you want to set %1$s as your default location?</string>
+    <string name="default_location_saved_message">%1$s saved as default location!</string>
+    <string name="location_not_found">Location not found</string>
+    <string name="error_fetching_suggestions">Error fetching suggestions</string>
+    <string name="unknown_location">Unknown Location</string>
 </resources>

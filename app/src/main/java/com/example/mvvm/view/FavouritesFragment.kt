@@ -1,5 +1,6 @@
 package com.example.mvvm.view
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -60,10 +61,25 @@ class FavouritesFragment : Fragment() {
                 findNavController().navigate(action)
             },
             onDeleteClick = { position ->
+                // Get the item to remove
                 val placeToRemove = adapter.getItemAt(position)
-                viewModel.removePlace(placeToRemove)
-                updateUI(adapter.itemCount == 0)
+
+                // Create an AlertDialog to confirm deletion
+                AlertDialog.Builder(context)
+                    .setTitle(R.string.confirm_deletion_title)
+                    .setMessage(R.string.confirm_deletion_message)
+                    .setPositiveButton(R.string.yes) { dialog, _ ->
+                        // Proceed with deletion
+                        viewModel.removePlace(placeToRemove)
+                        updateUI(adapter.itemCount == 0)
+                        dialog.dismiss() // Dismiss the dialog
+                    }
+                    .setNegativeButton(R.string.no) { dialog, _ ->
+                        dialog.cancel() // Cancel the dialog
+                    }
+                    .show()
             }
+
         )
 
 

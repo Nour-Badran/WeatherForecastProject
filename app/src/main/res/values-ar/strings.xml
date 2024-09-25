@@ -65,4 +65,17 @@
     <string name="unable">غير قادر على الحصول على الموقع</string>
     <string name="hourly">فشل في تحميل الطقس لكل ساعة</string>
     <string name="daily">فشل في تحميل الطقس اليومي</string>
+    <string name="confirm_deletion_title">تأكيد الحذف</string>
+    <string name="confirm_deletion_message">هل أنت متأكد أنك تريد حذف هذا المكان؟</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    <string name="save_location_title">حفظ الموقع</string>
+    <string name="save_location_message">هل تريد حفظ %1$s في المفضلة؟</string>
+    <string name="favorite_saved_message"> تم حفظ %1$s في المفضلة!</string>
+    <string name="save_default_location_message">هل تريد تعيين %1$s كموقع افتراضي لك؟</string>
+    <string name="default_location_saved_message"> تم حفظ %1$s كموقع افتراضي!</string>
+    <string name="location_not_found">الموقع غير موجود</string>
+    <string name="error_fetching_suggestions">خطأ في جلب الاقتراحات</string>
+    <string name="unknown_location">موقع غير معروف</string>
+
 </resources>

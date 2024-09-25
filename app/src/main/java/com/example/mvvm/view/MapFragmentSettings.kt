@@ -74,8 +74,8 @@ class MapFragmentSettings : Fragment() {
 
         mapView.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(true)
-        mapView.controller.setZoom(15.0)
-        mapView.controller.setCenter(GeoPoint(30.0, 31.1342)) // Default center at Giza
+        mapView.controller.setZoom(16.0)
+        mapView.controller.setCenter(GeoPoint(30.054205, 30.939972)) // Default center at Giza
 
         // Set up AutoCompleteTextView with dynamic location suggestions
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
@@ -109,13 +109,13 @@ class MapFragmentSettings : Fragment() {
                     addMarker(location, selectedCity)
                     mapView.controller.animateTo(location)
                 } else {
-                    Toast.makeText(requireContext(), "Location not found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.location_not_found, Toast.LENGTH_SHORT).show()
                 }
             }
         }
         val mapEventsReceiver = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                p?.let { addMarker(it, "Unknown Location") }
+                p?.let { addMarker(it, getString(R.string.unknown_location)) }
                 return true
             }
 
@@ -152,7 +152,7 @@ class MapFragmentSettings : Fragment() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Error fetching suggestions", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.error_fetching_suggestions, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -214,16 +214,16 @@ class MapFragmentSettings : Fragment() {
     }
     private fun showSaveDialog(cityName: String, location: GeoPoint) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Save Location")
-            .setMessage("Do you want to set $cityName as your default location?")
-            .setPositiveButton("Yes") { _, _ ->
+            .setTitle(R.string.save_location_title)
+            .setMessage(getString(R.string.save_default_location_message, cityName))
+            .setPositiveButton(R.string.yes) { _, _ ->
                 val favoritePlace = FavoritePlaces(cityName = cityName, lat = location.latitude, lon = location.longitude)
                 viewModel.updateLocation("MAP", R.id.map_radio_button)
-                viewModel.setLatLon(favoritePlace.lat,favoritePlace.lon)
-                Toast.makeText(requireContext(), "$cityName saved as default location!", Toast.LENGTH_SHORT).show()
+                viewModel.setLatLon(favoritePlace.lat, favoritePlace.lon)
+                Toast.makeText(requireContext(), getString(R.string.default_location_saved_message, cityName), Toast.LENGTH_SHORT).show()
                 navigateToHome()
             }
-            .setNegativeButton("No") { _, _ ->
+            .setNegativeButton(R.string.no) { _, _ ->
                 currentMarker?.let {
                     mapView.overlays.remove(it)
                     currentMarker = null
@@ -232,6 +232,7 @@ class MapFragmentSettings : Fragment() {
             }
             .show()
     }
+
     private fun navigateToHome(){
         findNavController().navigate(R.id.action_mapFragmentSettings2_to_homeFragment)
     }
