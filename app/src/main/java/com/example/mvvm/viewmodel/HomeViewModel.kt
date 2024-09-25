@@ -3,8 +3,6 @@ package com.example.mvvm.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mvvm.db.WeatherDatabase
-import com.example.mvvm.db.WeatherLocalDataSource
 import com.example.mvvm.model.ApiState
 import com.example.mvvm.utilities.mapDailyWeather
 import com.example.mvvm.utilities.mapHourlyWeatherForTodayAndTomorrow
@@ -12,7 +10,6 @@ import com.example.mvvm.model.DailyWeather
 import com.example.mvvm.model.HourlyWeather
 import com.example.mvvm.model.WeatherData
 import com.example.mvvm.model.WeatherRepository
-import com.example.mvvm.network.WeatherRemoteDataSource
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -32,6 +29,7 @@ class HomeViewModel(
 
     private val _isLocalDataUsed = MutableStateFlow(false)
     val isLocalDataUsed: StateFlow<Boolean> = _isLocalDataUsed
+
     fun fetchWeatherData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null,favDatabase: Boolean = false) {
         viewModelScope.launch {
             try {
@@ -46,6 +44,10 @@ class HomeViewModel(
                         // Update state to notify UI if local data is used
                         if (isLocalData) {
                             _isLocalDataUsed.value = true
+                        }
+                        else
+                        {
+                            _isLocalDataUsed.value = false
                         }
                     }
             } catch (e: Exception) {

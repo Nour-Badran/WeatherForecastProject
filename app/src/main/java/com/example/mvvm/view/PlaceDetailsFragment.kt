@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mvvm.R
 import com.example.mvvm.databinding.FragmentPlaceDetailsBinding
-import com.example.mvvm.databinding.HomeFragmentBinding
 import com.example.mvvm.db.FavoritePlaces
 import com.example.mvvm.db.WeatherDatabase
 import com.example.mvvm.db.WeatherLocalDataSource
@@ -21,8 +20,8 @@ import com.example.mvvm.model.ApiState
 import com.example.mvvm.model.SettingsLocalDataSource
 import com.example.mvvm.model.SettingsRepository
 import com.example.mvvm.model.WeatherRepository
-import com.example.mvvm.network.NetworkUtil
-import com.example.mvvm.network.WeatherRemoteDataSource
+import com.example.mvvm.network.brodcastReciever.NetworkUtil
+import com.example.mvvm.network.weatherApi.WeatherRemoteDataSource
 import com.example.mvvm.utilities.capitalizeFirstLetter
 import com.example.mvvm.utilities.customizeSnackbar
 import com.example.mvvm.utilities.setIcon
@@ -87,7 +86,7 @@ class PlaceDetailsFragment : Fragment() {
             }
             else
             {
-                val snackbar = Snackbar.make(binding.root, "No Network", Snackbar.LENGTH_SHORT)
+                val snackbar = Snackbar.make(binding.root, R.string.no_network, Snackbar.LENGTH_SHORT)
                     .setBackgroundTint(requireContext().resources.getColor(android.R.color.holo_red_dark))
                     .setTextColor(requireContext().resources.getColor(android.R.color.white))
                 snackbar.setDuration(4000)
@@ -184,7 +183,7 @@ class PlaceDetailsFragment : Fragment() {
                     }
                     is ApiState.Error -> {
                         hideDailyLoading()
-                        Toast.makeText(requireContext(), "Failed to load daily weather", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.daily, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -212,7 +211,7 @@ class PlaceDetailsFragment : Fragment() {
                     }
                     is ApiState.Error -> {
                         hideHourlyLoading()
-                        Toast.makeText(requireContext(), "Failed to load hourly weather", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.hourly, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -313,6 +312,7 @@ class PlaceDetailsFragment : Fragment() {
                     }
                     is ApiState.Error -> {
                         hideOverallLoading()
+                        Toast.makeText(requireContext(), R.string.failed, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -320,7 +320,7 @@ class PlaceDetailsFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.isLocalDataUsed.collect { isLocal ->
                 if (isLocal) {
-                    val snackbar2 = Snackbar.make(binding.root, "Please check your internet connection to get the latest weather updates!", Snackbar.LENGTH_SHORT)
+                    val snackbar2 = Snackbar.make(binding.root, R.string.check_snackbar, Snackbar.LENGTH_SHORT)
                         .setBackgroundTint(requireContext().resources.getColor(android.R.color.holo_red_dark))
                         .setTextColor(requireContext().resources.getColor(android.R.color.white))
                     snackbar2.setDuration(4000)

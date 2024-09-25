@@ -58,4 +58,11 @@
     <string name="network_status_changed">تم تغيير حالة الشبكة</string>
     <string name="search_hint">ابحث عن أماكنك المفضلة!</string>
     <string name="no_network">"لا يوجد انترنت"</string>
+    <string name="check_snackbar">يرجى التحقق من اتصالك بالإنترنت للحصول على أحدث تحديثات الطقس</string>
+    <string name="failed">فشل في تحميل بيانات الطقس</string>
+    <string name="location_permission">مطلوب إذن الموقع</string>
+    <string name="invalid">موقع الخريطة غير صالح. يرجى تحديده.</string>
+    <string name="unable">غير قادر على الحصول على الموقع</string>
+    <string name="hourly">فشل في تحميل الطقس لكل ساعة</string>
+    <string name="daily">فشل في تحميل الطقس اليومي</string>
 </resources>

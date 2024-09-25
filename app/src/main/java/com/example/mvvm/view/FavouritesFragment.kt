@@ -15,7 +15,7 @@ import com.example.mvvm.databinding.FragmentFavouritesBinding
 import com.example.mvvm.db.WeatherDatabase
 import com.example.mvvm.db.WeatherLocalDataSource
 import com.example.mvvm.model.WeatherRepository
-import com.example.mvvm.network.WeatherRemoteDataSource
+import com.example.mvvm.network.weatherApi.WeatherRemoteDataSource
 import com.example.mvvm.viewmodel.FavPlacesViewModelFactory
 import com.example.mvvm.viewmodel.FavViewModel
 import kotlinx.coroutines.launch
@@ -39,7 +39,6 @@ class FavouritesFragment : Fragment() {
     ): View {
         binding = FragmentFavouritesBinding.inflate(inflater, container, false)
 
-        // Initialize the ViewModel
         val weatherDao = WeatherDatabase.getDatabase(requireActivity().application).weatherDao()
         val weatherRepository = WeatherRepository(
             context = requireActivity().application,
@@ -96,7 +95,7 @@ class FavouritesFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText.isNullOrEmpty()) {
-                    viewModel.resetSearchQuery() // Reset search when text is empty
+                    viewModel.resetSearchQuery()
                 } else {
                     viewModel.emitSearchQuery(newText)
                 }

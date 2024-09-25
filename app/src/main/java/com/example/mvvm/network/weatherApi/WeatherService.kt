@@ -1,4 +1,4 @@
-package com.example.mvvm.network
+package com.example.mvvm.network.weatherApi
 
 import com.example.mvvm.model.FiveDayResponse
 import com.example.mvvm.model.WeatherApiResponse

@@ -20,9 +20,12 @@ import com.example.mvvm.R
 import com.example.mvvm.db.FavoritePlaces
 import com.example.mvvm.model.SettingsLocalDataSource
 import com.example.mvvm.model.SettingsRepository
+import com.example.mvvm.network.NominatimApi.nominatimService
 import com.example.mvvm.viewmodel.SettingsViewModel
 import com.example.mvvm.viewmodel.SettingsViewModelFactory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.osmdroid.config.Configuration
@@ -41,6 +44,8 @@ class MapFragmentSettings : Fragment() {
     private var currentMarker: Marker? = null // Property to hold the current marker
     private lateinit var geocoder: Geocoder
     private lateinit var adapter: ArrayAdapter<String>
+    private var searchJob: Job? = null
+    private var previousQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,8 +85,16 @@ class MapFragmentSettings : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null && s.length > 0) {
-                    fetchLocationSuggestions(s.toString())
+                if (s.isNullOrEmpty()) {
+                    adapter.clear()
+                    adapter.notifyDataSetChanged()
+                } else if (s.toString() != previousQuery) {
+                    previousQuery = s.toString()
+                    searchJob?.cancel()
+                    searchJob = lifecycleScope.launch {
+                        delay(500)
+                        fetchLocationSuggestions(s.toString())
+                    }
                 }
             }
 
@@ -121,25 +134,19 @@ class MapFragmentSettings : Fragment() {
     private fun fetchLocationSuggestions(query: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // Use Geocoder to search for location names matching the query
-                val addresses = geocoder.getFromLocationName(query, 5) // Fetch top 5 results
-                val suggestions = addresses?.flatMap { address ->
-                    // Extracting locality, subLocality, featureName, and other address parts
-                    listOfNotNull(
-                        address.locality,
-                        address.subLocality,
-                        address.featureName,
-                        address.adminArea, // Administrative area (e.g., city or state)
-                        address.subAdminArea, // Sub-administrative area (e.g., district)
-                    )
-                }?.distinct() // Remove duplicates
+                // Make the network call to Nominatim API to fetch location suggestions
+                val response = nominatimService.searchLocations(query).execute()
 
-                // Switch to the main thread to update UI
-                withContext(Dispatchers.Main) {
-                    adapter.clear()
-                    if (!suggestions.isNullOrEmpty()) {
-                        adapter.addAll(suggestions)
-                        adapter.notifyDataSetChanged()
+                if (response.isSuccessful) {
+                    val suggestions = response.body()?.map { it.display_name } ?: emptyList()
+
+                    // Update the UI with the suggestions
+                    withContext(Dispatchers.Main) {
+                        adapter.clear()
+                        if (suggestions.isNotEmpty()) {
+                            adapter.addAll(suggestions)
+                            adapter.notifyDataSetChanged()
+                        }
                     }
                 }
             } catch (e: Exception) {

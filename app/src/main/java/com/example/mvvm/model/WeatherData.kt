@@ -18,7 +18,7 @@ data class WeatherData(
 )
 
 data class WeatherApiResponse(
-    @SerializedName("name") val cityName: String?,  // Note that the city name is not nested
+    @SerializedName("name") val cityName: String?,
     @SerializedName("main") val main: Main?,
     @SerializedName("weather") val weather: List<WeatherData>?,
     @SerializedName("wind") val wind: Wind?,
@@ -42,9 +42,9 @@ data class Main(
 data class Wind(val speed: Double)
 data class Clouds(val all: Int)
 data class Forecast(
-    val dt: Long,              // Date-time in Unix format
-    val temp: Double,          // Temperature
-    val date: String           // The formatted date as a string (optional)
+    val dt: Long,
+    val temp: Double,
+    val date: String
 )
 
 data class FiveDayResponse(

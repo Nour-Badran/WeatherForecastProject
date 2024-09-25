@@ -78,6 +78,7 @@ class SettingsFragment : Fragment(), Refreshable {
         binding.languageRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedButton = binding.root.findViewById<RadioButton>(checkedId)
             viewModel.updateLanguage(selectedButton.text.toString(), checkedId)
+            viewModel.updateLanguage(selectedButton.text.toString())
             updateUIForLanguage(selectedButton.text.toString())
         }
 
