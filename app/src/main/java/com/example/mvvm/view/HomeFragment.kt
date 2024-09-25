@@ -24,8 +24,8 @@ import com.example.mvvm.model.ApiState
 import com.example.mvvm.model.SettingsLocalDataSource
 import com.example.mvvm.model.SettingsRepository
 import com.example.mvvm.model.WeatherRepository
-import com.example.mvvm.network.NetworkUtil
-import com.example.mvvm.network.WeatherRemoteDataSource
+import com.example.mvvm.network.brodcastReciever.NetworkUtil
+import com.example.mvvm.network.weatherApi.WeatherRemoteDataSource
 import com.example.mvvm.utilities.capitalizeFirstLetter
 import com.example.mvvm.utilities.customizeSnackbar
 import com.example.mvvm.utilities.setIcon
@@ -39,15 +39,11 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import android.provider.Settings
-import android.view.Gravity
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import java.util.Locale
@@ -100,6 +96,9 @@ class HomeFragment : Fragment() {
             if (NetworkUtil.isNetworkConnected(requireContext()))
             {
                 fetchWeatherData()
+                observeWeatherData()
+                observeDaily()
+                observeHourly()
             }
             else
             {
@@ -136,19 +135,19 @@ class HomeFragment : Fragment() {
                 if (lat != null && lon != null) {
                     fetchWeatherAndForecast(lat, lon)
                 } else {
-                    Toast.makeText(requireContext(), "Unable to get location", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.unable, Toast.LENGTH_SHORT).show()
                 }
             }
         }
         // If Map is selected, fetch the stored lat/lon from SharedPreferences
-        else if (selectedLocation == "Map") {
+        else {
             val (lat, lon) = settingsViewModel.getLatLon()
 
             // Check if valid lat/lon values were retrieved
             if (lat != 0.0 && lon != 0.0) {
                 fetchWeatherAndForecast(lat, lon)
             } else {
-                Toast.makeText(requireContext(), "Invalid map location. Please set it.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.invalid, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -233,7 +232,7 @@ class HomeFragment : Fragment() {
                     }
                     is ApiState.Error -> {
                         hideDailyLoading()
-                        Toast.makeText(requireContext(), "Failed to load daily weather", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.daily, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -262,7 +261,7 @@ class HomeFragment : Fragment() {
                     }
                     is ApiState.Error -> {
                         hideHourlyLoading()
-                        Toast.makeText(requireContext(), "Failed to load hourly weather", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.hourly, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -365,8 +364,24 @@ class HomeFragment : Fragment() {
                     }
                     is ApiState.Error -> {
                         hideOverallLoading()
-                        Toast.makeText(requireContext(), "Failed to load weather data", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.failed, Toast.LENGTH_SHORT).show()
                     }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.isLocalDataUsed.collect { isLocal ->
+                if (isLocal) {
+                    val rootView = view ?: activity?.findViewById(android.R.id.content)
+                    val snackbar2 = rootView?.let {
+                        Snackbar.make(it, R.string.check_snackbar, Snackbar.LENGTH_SHORT)
+                            .setBackgroundTint(requireContext().resources.getColor(android.R.color.holo_red_dark))
+                            .setTextColor(requireContext().resources.getColor(android.R.color.white))
+                    }
+                    snackbar2?.setDuration(4000)
+                    customizeSnackbar(snackbar2!!, requireContext())
+                    snackbar2.show()
+
                 }
             }
         }
@@ -431,7 +446,7 @@ class HomeFragment : Fragment() {
             } else {
                 val snackbar = Snackbar.make(
                     requireView(),
-                    "Location permission is required",
+                    R.string.location_permission,
                     Snackbar.LENGTH_LONG
                 )
 

@@ -21,7 +21,7 @@
         <meta-data android:name="osmdroid.user_agent_value" android:value="com.example.myapp" />
 
         <receiver
-            android:name=".network.NetworkChangeReceiver"
+            android:name=".network.brodcastReciever.NetworkChangeReceiver"
             android:enabled="true"
             android:exported="true"></receiver>
 

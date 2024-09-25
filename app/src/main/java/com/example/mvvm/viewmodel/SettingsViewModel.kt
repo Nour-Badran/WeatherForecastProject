@@ -31,6 +31,23 @@ class SettingsViewModel(application: Application, private val repository: Settin
         _temperature.value = repository.getTemperature()
         _notificationsEnabled.value = repository.isNotificationsEnabled()
     }
+    fun updateLocation(newLocation: String) {
+        _location.value = newLocation
+        repository.setLocation(newLocation)
+    }
+    fun updateLanguage(newLanguage: String) {
+        _language.value = newLanguage
+        repository.setLanguage(newLanguage)
+    }
+    fun updateWindSpeed(newWindSpeed: String) {
+        _windSpeed.value = newWindSpeed
+        repository.setWindSpeed(newWindSpeed)
+    }
+    fun updateTemperature(newTemperature: String) {
+        _temperature.value = newTemperature
+        repository.setTemperature(newTemperature)
+    }
+
     fun setNotificationsEnabled(enabled: Boolean) {
         _notificationsEnabled.value = enabled
         repository.setNotificationsEnabled(enabled)

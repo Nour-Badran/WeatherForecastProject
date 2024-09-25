@@ -1,4 +1,4 @@
-package com.example.mvvm.network
+package com.example.mvvm.network.brodcastReciever
 
 import android.content.Context
 import android.net.ConnectivityManager

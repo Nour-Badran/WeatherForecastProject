@@ -16,8 +16,8 @@ import com.example.mvvm.db.WeatherLocalDataSource
 import com.example.mvvm.model.SettingsLocalDataSource
 import com.example.mvvm.model.SettingsRepository
 import com.example.mvvm.model.WeatherRepository
-import com.example.mvvm.network.NetworkChangeReceiver
-import com.example.mvvm.network.WeatherRemoteDataSource
+import com.example.mvvm.network.brodcastReciever.NetworkChangeReceiver
+import com.example.mvvm.network.weatherApi.WeatherRemoteDataSource
 import com.example.mvvm.viewmodel.FavPlacesViewModelFactory
 import com.example.mvvm.viewmodel.FavViewModel
 import com.example.mvvm.viewmodel.SettingsViewModel

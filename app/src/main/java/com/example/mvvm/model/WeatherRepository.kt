@@ -3,11 +3,9 @@ package com.example.mvvm.model
 import android.content.Context
 import com.example.mvvm.db.FavForecastEntity
 import com.example.mvvm.db.FavoritePlaces
-import com.example.mvvm.db.ForecastEntity
 import com.example.mvvm.db.WeatherLocalDataSource
-import com.example.mvvm.network.WeatherRemoteDataSource
+import com.example.mvvm.network.weatherApi.WeatherRemoteDataSource
 import com.example.mvvm.utilities.isConnectedToInternet
-import com.example.mvvm.utilities.mapToFavFiveDayResponse
 import com.example.mvvm.utilities.mapToFiveDayResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

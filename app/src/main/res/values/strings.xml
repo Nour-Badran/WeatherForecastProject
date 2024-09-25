@@ -58,4 +58,11 @@
     <string name="network_status_changed">Network status changed</string>
     <string name="search_hint">Search for your favourite places!</string>
     <string name="no_network">"No Network"</string>
+    <string name="check_snackbar">Please check your internet connection to get the latest weather updates</string>
+    <string name="failed">Failed to load weather data</string>
+    <string name="location_permission">Location permission is required</string>
+    <string name="invalid">Invalid map location. Please set it.</string>
+    <string name="unable">Unable to get location</string>
+    <string name="hourly">Failed to load hourly weather</string>
+    <string name="daily">Failed to load daily weather</string>
 </resources>

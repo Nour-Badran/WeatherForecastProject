@@ -41,7 +41,7 @@ class WeatherForecastAdapter(private val selectedLanguage: String,private val se
 
             val weatherDescription = forecast.weatherStatus
             val capitalizedDescription = capitalizeFirstLetter(weatherDescription)
-            // Set values to views
+
             itemView.findViewById<TextView>(R.id.tv_forecast_date).text = dateText
             itemView.findViewById<TextView>(R.id.tv_weather_status).text = capitalizedDescription
 
