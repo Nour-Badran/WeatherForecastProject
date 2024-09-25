@@ -17,6 +17,7 @@ import com.example.mvvm.databinding.HomeFragmentBinding
 import com.example.mvvm.db.FavoritePlaces
 import com.example.mvvm.db.WeatherDatabase
 import com.example.mvvm.db.WeatherLocalDataSource
+import com.example.mvvm.model.ApiState
 import com.example.mvvm.model.SettingsLocalDataSource
 import com.example.mvvm.model.SettingsRepository
 import com.example.mvvm.model.WeatherRepository
@@ -32,6 +33,8 @@ import com.example.mvvm.viewmodel.SettingsViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class PlaceDetailsFragment : Fragment() {
@@ -168,13 +171,22 @@ class PlaceDetailsFragment : Fragment() {
     }
     private fun observeDaily() {
         lifecycleScope.launch {
-            viewModel.dailyWeather.collect { dailyWeatherList ->
-                showDailyLoading()
-                if (dailyWeatherList.isNotEmpty()) {
-                    val updatedList = dailyWeatherList.drop(1).take(5)
-                    forecastAdapter.submitList(updatedList)
+            viewModel.dailyWeather.collect { apiState ->
+                when (apiState) {
+                    is ApiState.Loading -> showDailyLoading()
+                    is ApiState.Success -> {
+                        hideDailyLoading()
+                        val dailyWeatherList = apiState.data
+                        if (dailyWeatherList.isNotEmpty()) {
+                            val updatedList = dailyWeatherList.drop(1).take(5)
+                            forecastAdapter.submitList(updatedList)
+                        }
+                    }
+                    is ApiState.Error -> {
+                        hideDailyLoading()
+                        Toast.makeText(requireContext(), "Failed to load daily weather", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                hideDailyLoading()
             }
         }
     }
@@ -189,11 +201,20 @@ class PlaceDetailsFragment : Fragment() {
 
     private fun observeHourly() {
         lifecycleScope.launch {
-            viewModel.hourlyWeather.collect { hourlyWeatherList ->
-                showHourlyLoading()
-                val limitedHourlyWeatherList = hourlyWeatherList.take(15)
-                hourlyAdapter.submitList(limitedHourlyWeatherList)
-                hideHourlyLoading()
+            viewModel.hourlyWeather.collect { apiState ->
+                when (apiState) {
+                    is ApiState.Loading -> showHourlyLoading()
+                    is ApiState.Success -> {
+                        hideHourlyLoading()
+                        val hourlyWeatherList = apiState.data
+                        val limitedHourlyWeatherList = hourlyWeatherList.take(15)
+                        hourlyAdapter.submitList(limitedHourlyWeatherList)
+                    }
+                    is ApiState.Error -> {
+                        hideHourlyLoading()
+                        Toast.makeText(requireContext(), "Failed to load hourly weather", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
@@ -207,90 +228,104 @@ class PlaceDetailsFragment : Fragment() {
     }
     private fun observeWeatherData() {
         lifecycleScope.launch {
-            viewModel.weatherData.collect { weather ->
-                weather?.let {
-                    val timestamp = it.dt * 1000L  // Convert seconds to milliseconds
-
-                    val formattedDateTime = java.text.SimpleDateFormat("EEE, dd MMM yyyy \nhh:mm a", java.util.Locale.getDefault())
-                        .format(java.util.Date(timestamp))
-
-                    binding.tvDate.text = formattedDateTime
-
-
-                    binding.tvCityName.text = it.cityName
-
-                    // Determine temperature unit
-                    val temperatureUnit = when (selectedTemp) {
-                        "metric" -> "C"       // Celsius
-                        "imperial" -> "F"     // Fahrenheit
-                        "standard" -> "K"     // Kelvin
-                        else -> "C"
+            viewModel.weatherData.collect { apiState ->
+                when (apiState) {
+                    is ApiState.Loading -> {
+                        showOverallLoading()
                     }
+                    is ApiState.Success -> {
+                        hideOverallLoading()
+                        val weather = apiState.data
+                        weather?.let {
+                            val timestamp = it.dt * 1000L // Convert seconds to milliseconds
+                            val formattedDateTime = SimpleDateFormat("EEE, dd MMM yyyy \nhh:mm a", Locale.getDefault())
+                                .format(Date(timestamp))
+                            binding.tvDate.text = formattedDateTime
+                            binding.tvCityName.text = it.cityName
 
-                    // Format temperature
-                    val temperature = NumberFormat.getInstance(if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH)
-                        .format(it.temperature.toInt())
-                    binding.tvTemperature.text = "$temperature°$temperatureUnit"
+                            // Determine temperature unit
+                            val temperatureUnit = when (selectedTemp) {
+                                "metric" -> "C"
+                                "imperial" -> "F"
+                                "standard" -> "K"
+                                else -> "C"
+                            }
 
-                    // Format visibility, humidity, wind speed, pressure, and clouds
-                    val locale = if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH
-                    val numberFormat = NumberFormat.getInstance(locale)
+                            // Format temperature
+                            val temperature = NumberFormat.getInstance(if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH)
+                                .format(it.temperature.toInt())
+                            binding.tvTemperature.text = "$temperature°$temperatureUnit"
 
-                    binding.tvVisibility.text = if (selectedLanguage == "en") {
-                        "Visibility: ${numberFormat.format(it.visibility)} m"
-                    } else {
-                        "الرؤية: ${numberFormat.format(it.visibility)} م"
+                            // Format visibility, humidity, wind speed, pressure, and clouds
+                            val locale = if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH
+                            val numberFormat = NumberFormat.getInstance(locale)
+
+                            binding.tvVisibility.text = if (selectedLanguage == "en") {
+                                "Visibility: ${numberFormat.format(it.visibility)} m"
+                            } else {
+                                "الرؤية: ${numberFormat.format(it.visibility)} م"
+                            }
+
+                            val weatherDescription = it.description
+                            val capitalizedDescription = capitalizeFirstLetter(weatherDescription)
+                            binding.tvWeatherDescription.text = capitalizedDescription
+
+                            binding.tvHumidity.text = if (selectedLanguage == "en") {
+                                "Humidity: ${numberFormat.format(it.humidity)}%"
+                            } else {
+                                "الرطوبة: ${numberFormat.format(it.humidity)}%"
+                            }
+
+                            val selectedWindSpeedId = settingsViewModel.getWindSpeedId()
+                            val windSpeedInMps = it.windSpeed
+                            val selectedWindSpeed = when (selectedWindSpeedId) {
+                                R.id.meter_sec_radio_button -> "Meters/Second"
+                                R.id.mile_hour_radio_button -> "Miles/Hour"
+                                else -> "Meters/Second"
+                            }
+
+                            val windSpeedToDisplay = if (selectedWindSpeed == "Miles/Hour") {
+                                windSpeedInMps * 2.23694 // Convert from m/s to mph
+                            } else {
+                                windSpeedInMps // Keep the value in m/s
+                            }
+
+                            binding.tvWindSpeed.text = if (selectedLanguage == "en") {
+                                "Wind Speed: ${numberFormat.format(windSpeedToDisplay)} $selectedWindSpeed"
+                            } else {
+                                "سرعة الرياح: ${numberFormat.format(windSpeedToDisplay)} ${if (selectedWindSpeed == "Meters/Second") "متر/ثانية" else "ميل/ساعة"}"
+                            }
+
+                            binding.tvPressure.text = if (selectedLanguage == "en") {
+                                "Pressure: ${numberFormat.format(it.pressure)} hPa"
+                            } else {
+                                "الضغط: ${numberFormat.format(it.pressure)} هكتوباسكال"
+                            }
+
+                            binding.tvClouds.text = if (selectedLanguage == "en") {
+                                "Clouds: ${numberFormat.format(it.clouds)}%"
+                            } else {
+                                "الغيوم: ${numberFormat.format(it.clouds)}%"
+                            }
+
+                            binding.weatherIcon.setImageResource(setIcon(it.icon))
+                        }
                     }
-
-                    val weatherDescription = weather.description
-                    val capitalizedDescription = capitalizeFirstLetter(weatherDescription)
-
-                    binding.tvWeatherDescription.text = capitalizedDescription
-                    binding.tvHumidity.text = if (selectedLanguage == "en") {
-                        "Humidity: ${numberFormat.format(it.humidity)}%"
-                    } else {
-                        "الرطوبة: ${numberFormat.format(it.humidity)}%"
+                    is ApiState.Error -> {
+                        hideOverallLoading()
                     }
-
-                    //////////////////
-                    val selectedWindSpeedId = settingsViewModel.getWindSpeedId()
-                    val windSpeedInMps = it.windSpeed
-
-                    selectedWindSpeed = when (selectedWindSpeedId) {
-                        R.id.meter_sec_radio_button -> "Meters/Second"
-                        R.id.mile_hour_radio_button -> "Miles/Hour"
-                        else -> "Meters/Second"
-                    }
-
-                    // Convert wind speed to miles per hour if "m/h" is selected
-                    val windSpeedToDisplay = if (selectedWindSpeed == "Miles/Hour") {
-                        windSpeedInMps * 2.23694  // Convert from m/s to mph
-                    } else {
-                        windSpeedInMps  // Keep the value in m/s
-                    }
-
-
-
-                    // Set wind speed text dynamically based on language and unit selection
-                    binding.tvWindSpeed.text = if (selectedLanguage == "en") {
-                        "Wind Speed: ${numberFormat.format(windSpeedToDisplay)} $selectedWindSpeed"
-                    } else {
-                        "سرعة الرياح: ${numberFormat.format(windSpeedToDisplay)} ${if (selectedWindSpeed == "Meters/Second") "متر/ثانية" else "ميل/ساعة"}"
-                    }
-
-                    binding.tvPressure.text = if (selectedLanguage == "en") {
-                        "Pressure: ${numberFormat.format(it.pressure)} hPa"
-                    } else {
-                        "الضغط: ${numberFormat.format(it.pressure)} هكتوباسكال"
-                    }
-
-                    binding.tvClouds.text = if (selectedLanguage == "en") {
-                        "Clouds: ${numberFormat.format(it.clouds)}%"
-                    } else {
-                        "الغيوم: ${numberFormat.format(it.clouds)}%"
-                    }
-
-                    binding.weatherIcon.setImageResource(setIcon(it.icon))
+                }
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.isLocalDataUsed.collect { isLocal ->
+                if (isLocal) {
+                    val snackbar2 = Snackbar.make(binding.root, "Please check your internet connection to get the latest weather updates!", Snackbar.LENGTH_SHORT)
+                        .setBackgroundTint(requireContext().resources.getColor(android.R.color.holo_red_dark))
+                        .setTextColor(requireContext().resources.getColor(android.R.color.white))
+                    snackbar2.setDuration(4000)
+                    customizeSnackbar(snackbar2, requireContext())
+                    snackbar2.show()
                 }
             }
         }

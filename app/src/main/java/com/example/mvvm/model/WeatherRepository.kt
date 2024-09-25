@@ -33,44 +33,29 @@ class WeatherRepository(
     suspend fun deleteFavoritePlace(place: FavoritePlaces) {
         localDataSource.deletePlace(place)
     }
-    suspend fun getWeatherData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null,favDatabase: Boolean = false): Flow<WeatherData?> = flow {
+    suspend fun getWeatherData(lat: Double, lon: Double, apiKey: String, units: String,lang: String? = null,favDatabase: Boolean = false):  Flow<Pair<WeatherData?, Boolean>> = flow {
+        val isLocalData: Boolean
         val data = if (isConnectedToInternet(context)) {
             // Set a timeout duration for remote data fetching
-            val remoteData = withTimeoutOrNull(5000L) { // Timeout after 5 seconds
-                remoteDataSource.fetchWeatherData(lat, lon, apiKey, units , lang)
+            val remoteData = withTimeoutOrNull(5000L) {
+                remoteDataSource.fetchWeatherData(lat, lon, apiKey, units, lang)
             }
             if (remoteData != null) {
-                // Save data to the local database
-                if(!favDatabase)
-                {
+                if (!favDatabase) {
                     localDataSource.saveWeatherData(remoteData)
                 }
-                else
-                {
-                    localDataSource.saveFavWeatherData(remoteData)  //handle fav
-                }
-                emit(remoteData)
+                emit(Pair(remoteData, false))  // Data from remote source, not local
             } else {
                 // Fallback to local data if network is slow or data is null
-                if(!favDatabase)
-                {
-                    emit(localDataSource.getWeatherData())
-                }
-                else
-                {
-                    emit(localDataSource.getFavWeatherData()) // handle fav
-                }
+                isLocalData = true
+                val localData = if (!favDatabase) localDataSource.getWeatherData() else null
+                emit(Pair(localData, isLocalData))
             }
         } else {
-            // Fetch from local database if no internet connection
-            if(!favDatabase)
-            {
-                emit(localDataSource.getWeatherData())
-            }
-            else
-            {
-                emit(localDataSource.getFavWeatherData()) //handle fav
-            }
+            // No internet connection, fetch from local database
+            isLocalData = true
+            val localData = if (!favDatabase) localDataSource.getWeatherData() else null
+            emit(Pair(localData, isLocalData))
         }
     }.shareIn(CoroutineScope(Dispatchers.Default), SharingStarted.Lazily)
 
@@ -88,7 +73,7 @@ class WeatherRepository(
                 }
                 else
                 {
-                    localDataSource.saveFavForecastData(remoteForecast) // handle fav
+                    //localDataSource.saveFavForecastData(remoteForecast) // handle fav
                 }
                 emit(remoteForecast)
             } else {
@@ -103,7 +88,7 @@ class WeatherRepository(
                 {
                     val forecast: List<FavForecastEntity>
                     forecast = localDataSource.getFavForecastData()  // handle fav
-                    emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFavFiveDayResponse() })
+                    //emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFavFiveDayResponse() })
                 }
             }
         } else {
@@ -118,9 +103,14 @@ class WeatherRepository(
             {
                 val forecast: List<FavForecastEntity>
                 forecast = localDataSource.getFavForecastData() // handle fav
-                emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFavFiveDayResponse() })
+                //emit(forecast.takeIf { it.isNotEmpty() }?.let { forecast.mapToFavFiveDayResponse() })
             }
         }
     }
 }
 
+sealed class ApiState<out T> {
+    data class Success<out T>(val data: T) : ApiState<T>()
+    data class Error(val exception: Throwable) : ApiState<Nothing>()
+    object Loading : ApiState<Nothing>()
+}

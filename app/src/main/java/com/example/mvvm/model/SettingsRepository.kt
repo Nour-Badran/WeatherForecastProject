@@ -27,4 +27,7 @@ class SettingsRepository(private val localDataSource: SettingsLocalDataSource) {
 
     fun getTemperatureId(): Int = localDataSource.getTemperatureId()
     fun setTemperatureId(id: Int) = localDataSource.setTemperatureId(id)
+
+    fun getLatLon(): Pair<Double,Double> = localDataSource.getLatLon()
+    fun setLatLon(lat: Double, lon: Double) = localDataSource.setLatLon(lat,lon)
 }

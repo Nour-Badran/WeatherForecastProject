@@ -25,35 +25,12 @@ class SettingsViewModel(application: Application, private val repository: Settin
     val notificationsEnabled: LiveData<Boolean> get() = _notificationsEnabled
 
     init {
-        // Load settings from the repository
         _location.value = repository.getLocation()
         _language.value = repository.getLanguage()
         _windSpeed.value = repository.getWindSpeed()
         _temperature.value = repository.getTemperature()
         _notificationsEnabled.value = repository.isNotificationsEnabled()
     }
-
-    // Update settings via repository
-    fun updateLocation(newLocation: String) {
-        _location.value = newLocation
-        repository.setLocation(newLocation)
-    }
-
-    fun updateLanguage(newLanguage: String) {
-        _language.value = newLanguage
-        repository.setLanguage(newLanguage)
-    }
-
-    fun updateWindSpeed(newWindSpeed: String) {
-        _windSpeed.value = newWindSpeed
-        repository.setWindSpeed(newWindSpeed)
-    }
-
-    fun updateTemperature(newTemperature: String) {
-        _temperature.value = newTemperature
-        repository.setTemperature(newTemperature)
-    }
-
     fun setNotificationsEnabled(enabled: Boolean) {
         _notificationsEnabled.value = enabled
         repository.setNotificationsEnabled(enabled)
@@ -82,4 +59,7 @@ class SettingsViewModel(application: Application, private val repository: Settin
     fun getLanguageId(): Int = repository.getLanguageId()
     fun getWindSpeedId(): Int = repository.getWindSpeedId()
     fun getTemperatureId(): Int = repository.getTemperatureId()
+
+    fun getLatLon(): Pair<Double,Double> = repository.getLatLon()
+    fun setLatLon(lat: Double, lon: Double) = repository.setLatLon(lat,lon)
 }

@@ -57,7 +57,7 @@ class MapFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         mapView = view.findViewById(R.id.map)
         citySearch = view.findViewById(R.id.city_search)
@@ -98,7 +98,7 @@ class MapFragment : Fragment() {
         }
         val mapEventsReceiver = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                p?.let { addMarker(it, "New Marker") }
+                p?.let { addMarker(it, "Unknown Location") }
                 return true
             }
 
@@ -137,8 +137,6 @@ class MapFragment : Fragment() {
                     if (!suggestions.isNullOrEmpty()) {
                         adapter.addAll(suggestions)
                         adapter.notifyDataSetChanged()
-                    } else {
-                        Toast.makeText(requireContext(), "No suggestions found", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {

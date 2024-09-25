@@ -59,4 +59,17 @@ class SettingsLocalDataSource(context: Context) {
     fun setTemperatureId(id: Int) {
         editor.putInt("temperature_id", id).apply()
     }
+
+    fun setLatLon(lat: Double,lon: Double)
+    {
+        editor.putFloat("latitude", lat.toFloat())
+        editor.putFloat("longitude", lon.toFloat())
+        editor.apply()
+    }
+    fun getLatLon(): Pair<Double, Double> {
+        val lat = sharedPreferences.getFloat("latitude", 0.0f).toDouble()
+        val lon = sharedPreferences.getFloat("longitude", 0.0f).toDouble()
+
+        return Pair(lat, lon)
+    }
 }

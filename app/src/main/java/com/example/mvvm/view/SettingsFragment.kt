@@ -9,6 +9,7 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.mvvm.R
 import com.example.mvvm.databinding.FragmentSettingsBinding
 import com.example.mvvm.model.SettingsLocalDataSource
@@ -17,11 +18,12 @@ import com.example.mvvm.viewmodel.SettingsViewModel
 import com.example.mvvm.viewmodel.SettingsViewModelFactory
 import java.util.Locale
 
-class SettingsFragment : Fragment(),Refreshable {
+class SettingsFragment : Fragment(), Refreshable {
 
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var viewModel: SettingsViewModel
     private lateinit var repository: SettingsRepository
+    private var isInitialLoad = true  // Flag to track initial load
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,18 +62,22 @@ class SettingsFragment : Fragment(),Refreshable {
 
         // Set listeners for UI components
         binding.locationRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val selectedButton = binding.root.findViewById<RadioButton>(checkedId)
-            viewModel.updateLocation(selectedButton.text.toString(), checkedId)
-            ///////////////////////////////////////////////
-            if (selectedButton.id == R.id.map_radio_button) {
-                Toast.makeText(requireContext(), "MAP", Toast.LENGTH_SHORT).show()
+            if (!isInitialLoad) {
+                val selectedButton = binding.root.findViewById<RadioButton>(checkedId)
+                if(selectedButton.id != R.id.map_radio_button)
+                {
+                    viewModel.updateLocation(selectedButton.text.toString(), checkedId)
+                }
+
+                if (selectedButton.id == R.id.map_radio_button) {
+                    findNavController().navigate(R.id.action_SettingsFragment_to_mapFragmentSettings2)
+                }
             }
         }
 
         binding.languageRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedButton = binding.root.findViewById<RadioButton>(checkedId)
             viewModel.updateLanguage(selectedButton.text.toString(), checkedId)
-            viewModel.updateLanguage(selectedButton.text.toString())
             updateUIForLanguage(selectedButton.text.toString())
         }
 
@@ -83,11 +89,15 @@ class SettingsFragment : Fragment(),Refreshable {
         binding.temperatureRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedButton = binding.root.findViewById<RadioButton>(checkedId)
             viewModel.updateTemperature(selectedButton.text.toString(), checkedId)
-            viewModel.updateTemperature(selectedButton.text.toString())
-        };
+        }
 
         binding.notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
             viewModel.setNotificationsEnabled(isChecked)
+        }
+
+        // Set isInitialLoad to false after all default selections are made
+        binding.root.post {
+            isInitialLoad = false  // This ensures the flag is reset after the initial setup
         }
     }
 
@@ -137,14 +147,12 @@ class SettingsFragment : Fragment(),Refreshable {
                 binding.fahrenheitRadioButton.text = "فهرنهايت"
                 binding.notificationsSwitch.text = "تفعيل"
                 binding.root.layoutDirection = View.LAYOUT_DIRECTION_RTL
-
             }
         }
     }
-
-
 
     override fun refresh() {
 
     }
 }
+
