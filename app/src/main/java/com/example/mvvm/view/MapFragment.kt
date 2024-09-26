@@ -14,22 +14,25 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import org.osmdroid.config.Configuration
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Marker
-import com.example.mvvm.R
-import com.example.mvvm.db.FavoritePlaces
-import com.example.mvvm.network.NominatimApi.nominatimService
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.MapEventsOverlay
+import com.example.mvvm.R
+import com.example.mvvm.db.FavoritePlaces
+import com.example.mvvm.viewmodel.MapViewModel
+import com.example.mvvm.viewmodel.MapViewModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class MapFragment : Fragment() {
@@ -37,11 +40,14 @@ class MapFragment : Fragment() {
     private lateinit var mapView: MapView
     private lateinit var citySearch: AutoCompleteTextView
     private var listener: OnLocationSelectedListener? = null
-    private var currentMarker: Marker? = null // Property to hold the current marker
+    private var currentMarker: Marker? = null
     private lateinit var geocoder: Geocoder
     private lateinit var adapter: ArrayAdapter<String>
     private var searchJob: Job? = null
     private var previousQuery: String? = null
+
+    // Use ViewModel
+    private lateinit var viewModel: MapViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,15 +73,17 @@ class MapFragment : Fragment() {
         citySearch = view.findViewById(R.id.city_search)
         geocoder = Geocoder(requireContext(), Locale.getDefault())
 
+        val factory = MapViewModelFactory()
+        viewModel = factory.create(MapViewModel::class.java)
+
         mapView.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(true)
         mapView.controller.setZoom(16.0)
-        mapView.controller.setCenter(GeoPoint(30.054205, 30.939972)) // Default center at Giza
+        mapView.controller.setCenter(GeoPoint(30.054205, 30.939972))
 
         // Set up AutoCompleteTextView with dynamic location suggestions
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         citySearch.setAdapter(adapter)
-
 
         citySearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -97,7 +105,6 @@ class MapFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-
         citySearch.setOnItemClickListener { parent, _, position, _ ->
             val selectedCity = parent.getItemAtPosition(position).toString()
             getLocationFromCityName(selectedCity) { location ->
@@ -109,6 +116,7 @@ class MapFragment : Fragment() {
                 }
             }
         }
+
         val mapEventsReceiver = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
                 p?.let { addMarker(it, getString(R.string.unknown_location)) }
@@ -116,7 +124,6 @@ class MapFragment : Fragment() {
             }
 
             override fun longPressHelper(p: GeoPoint?): Boolean {
-                // Handle long press if needed
                 return false
             }
         }
@@ -124,94 +131,58 @@ class MapFragment : Fragment() {
         val mapEventsOverlay = MapEventsOverlay(mapEventsReceiver)
         mapView.overlays.add(mapEventsOverlay)
 
-
         return view
     }
 
     private fun fetchLocationSuggestions(query: String) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                // Make the network call to Nominatim API to fetch location suggestions
-                val response = nominatimService.searchLocations(query).execute()
-
-                if (response.isSuccessful) {
-                    val suggestions = response.body()?.map { it.display_name } ?: emptyList()
-
-                    // Update the UI with the suggestions
-                    withContext(Dispatchers.Main) {
-                        adapter.clear()
-                        if (suggestions.isNotEmpty()) {
-                            adapter.addAll(suggestions)
-                            adapter.notifyDataSetChanged()
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), R.string.error_fetching_suggestions, Toast.LENGTH_SHORT).show()
-                }
+        lifecycleScope.launch {
+            viewModel.fetchLocationSuggestions(query).collect { suggestions ->
+                adapter.clear()
+                adapter.addAll(suggestions)
+                adapter.notifyDataSetChanged()
             }
         }
     }
-
-
 
     private fun getLocationFromCityName(city: String, onLocationFound: (GeoPoint?) -> Unit) {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             try {
-                val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 val addresses = geocoder.getFromLocationName(city, 1)
-                if (addresses != null) {
-                    if (addresses.isNotEmpty()) {
-                        val location = addresses[0]
-                        withContext(Dispatchers.Main) {
-                            onLocationFound(GeoPoint(location.latitude, location.longitude))
-                        }
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            onLocationFound(null)
-                        }
-                    }
+                if (addresses != null && addresses.isNotEmpty()) {
+                    onLocationFound(GeoPoint(addresses[0].latitude, addresses[0].longitude))
+                } else {
+                    onLocationFound(null)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                withContext(Dispatchers.Main) {
-                    onLocationFound(null)
-                }
+                onLocationFound(null)
             }
         }
     }
 
-
     private fun addMarker(location: GeoPoint, defaultTitle: String) {
-        // Remove the existing marker if it exists
         currentMarker?.let {
             mapView.overlays.remove(it)
         }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val geocoder = Geocoder(requireContext(), Locale.getDefault())
-            var locationName = defaultTitle
-
-            try {
-                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    locationName = addresses[0].locality ?: defaultTitle
+        lifecycleScope.launch {
+            val locationName = withContext(Dispatchers.IO) {
+                try {
+                    val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                    addresses?.firstOrNull()?.locality ?: defaultTitle
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    defaultTitle
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
 
-            withContext(Dispatchers.Main) {
-                currentMarker = Marker(mapView).apply {
-                    position = location
-                    title = locationName
-                    mapView.overlays.add(this)
-                }
-                mapView.invalidate()
-                showSaveDialog(locationName, location)
+            currentMarker = Marker(mapView).apply {
+                position = location
+                title = locationName
+                mapView.overlays.add(this)
             }
+            mapView.invalidate()
+            showSaveDialog(locationName, location)
         }
     }
 
@@ -235,7 +206,7 @@ class MapFragment : Fragment() {
             .show()
     }
 
-    fun navigateToFavorites() {
+    private fun navigateToFavorites() {
         findNavController().navigate(R.id.action_mapFragment_to_FavouritesFragment)
     }
 
