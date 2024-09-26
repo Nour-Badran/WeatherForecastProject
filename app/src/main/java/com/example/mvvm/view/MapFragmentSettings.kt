@@ -21,6 +21,8 @@ import com.example.mvvm.db.FavoritePlaces
 import com.example.mvvm.model.SettingsLocalDataSource
 import com.example.mvvm.model.SettingsRepository
 import com.example.mvvm.network.NominatimApi.nominatimService
+import com.example.mvvm.viewmodel.MapViewModel
+import com.example.mvvm.viewmodel.MapViewModelFactory
 import com.example.mvvm.viewmodel.SettingsViewModel
 import com.example.mvvm.viewmodel.SettingsViewModelFactory
 import kotlinx.coroutines.Dispatchers
@@ -39,19 +41,20 @@ import java.util.Locale
 class MapFragmentSettings : Fragment() {
     private lateinit var mapView: MapView
     private lateinit var citySearch: AutoCompleteTextView
-    private lateinit var viewModel: SettingsViewModel
+    private lateinit var settingViewModel: SettingsViewModel
     private lateinit var repository: SettingsRepository
     private var currentMarker: Marker? = null // Property to hold the current marker
     private lateinit var geocoder: Geocoder
     private lateinit var adapter: ArrayAdapter<String>
     private var searchJob: Job? = null
     private var previousQuery: String? = null
+    private lateinit var viewModel: MapViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         repository = SettingsRepository(SettingsLocalDataSource(requireContext()))
         val factory = SettingsViewModelFactory(requireActivity().application, repository)
-        viewModel = ViewModelProvider(this, factory).get(SettingsViewModel::class.java)
+        settingViewModel = ViewModelProvider(this, factory).get(SettingsViewModel::class.java)
         requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 //viewModel.updateLocation("MAP", R.id.mapFragment)
@@ -71,6 +74,9 @@ class MapFragmentSettings : Fragment() {
         mapView = view.findViewById(R.id.map)
         citySearch = view.findViewById(R.id.city_search)
         geocoder = Geocoder(requireContext(), Locale.getDefault())
+
+        val factory = MapViewModelFactory()
+        viewModel = factory.create(MapViewModel::class.java)
 
         mapView.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(true)
@@ -132,53 +138,26 @@ class MapFragmentSettings : Fragment() {
         return view
     }
     private fun fetchLocationSuggestions(query: String) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                // Make the network call to Nominatim API to fetch location suggestions
-                val response = nominatimService.searchLocations(query).execute()
-
-                if (response.isSuccessful) {
-                    val suggestions = response.body()?.map { it.display_name } ?: emptyList()
-
-                    // Update the UI with the suggestions
-                    withContext(Dispatchers.Main) {
-                        adapter.clear()
-                        if (suggestions.isNotEmpty()) {
-                            adapter.addAll(suggestions)
-                            adapter.notifyDataSetChanged()
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), R.string.error_fetching_suggestions, Toast.LENGTH_SHORT).show()
-                }
+        lifecycleScope.launch {
+            viewModel.fetchLocationSuggestions(query).collect { suggestions ->
+                adapter.clear()
+                adapter.addAll(suggestions)
+                adapter.notifyDataSetChanged()
             }
         }
     }
     private fun getLocationFromCityName(city: String, onLocationFound: (GeoPoint?) -> Unit) {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             try {
-                val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 val addresses = geocoder.getFromLocationName(city, 1)
-                if (addresses != null) {
-                    if (addresses.isNotEmpty()) {
-                        val location = addresses[0]
-                        withContext(Dispatchers.Main) {
-                            onLocationFound(GeoPoint(location.latitude, location.longitude))
-                        }
-                    } else {
-                        withContext(Dispatchers.Main) {
-                            onLocationFound(null)
-                        }
-                    }
+                if (addresses != null && addresses.isNotEmpty()) {
+                    onLocationFound(GeoPoint(addresses[0].latitude, addresses[0].longitude))
+                } else {
+                    onLocationFound(null)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                withContext(Dispatchers.Main) {
-                    onLocationFound(null)
-                }
+                onLocationFound(null)
             }
         }
     }
@@ -218,8 +197,8 @@ class MapFragmentSettings : Fragment() {
             .setMessage(getString(R.string.save_default_location_message, cityName))
             .setPositiveButton(R.string.yes) { _, _ ->
                 val favoritePlace = FavoritePlaces(cityName = cityName, lat = location.latitude, lon = location.longitude)
-                viewModel.updateLocation("MAP", R.id.map_radio_button)
-                viewModel.setLatLon(favoritePlace.lat, favoritePlace.lon)
+                settingViewModel.updateLocation("MAP", R.id.map_radio_button)
+                settingViewModel.setLatLon(favoritePlace.lat, favoritePlace.lon)
                 Toast.makeText(requireContext(), getString(R.string.default_location_saved_message, cityName), Toast.LENGTH_SHORT).show()
                 navigateToHome()
             }
