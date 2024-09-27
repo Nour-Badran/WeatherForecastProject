@@ -30,6 +30,6 @@ class MapViewModel : ViewModel() {
 
         emit(suggestions)
     }.onStart {
-        // Optionally, show a loading state
+
     }
 }

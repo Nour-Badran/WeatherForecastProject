@@ -77,4 +77,8 @@
     <string name="location_not_found">Location not found</string>
     <string name="error_fetching_suggestions">Error fetching suggestions</string>
     <string name="unknown_location">Unknown Location</string>
+    <string name="cityName">City Name</string>
+    <string name="weatherAlarm">Weather Alarm</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="weatherStatus">"Weather Status "</string>
 </resources>
