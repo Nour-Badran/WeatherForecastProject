@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layoutDirection="locale"
     android:background="?android:attr/windowBackground"
-    tools:context=".view.SettingsFragment">
+    tools:context=".settings.view.SettingsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
