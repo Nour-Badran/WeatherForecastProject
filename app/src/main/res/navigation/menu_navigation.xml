@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.mvvm.view.HomeFragment"
+        android:name="com.example.mvvm.weather.view.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/home_fragment">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/SettingsFragment"
-        android:name="com.example.mvvm.view.SettingsFragment"
+        android:name="com.example.mvvm.settings.view.SettingsFragment"
         android:label="SettingsFragment">
         <action
             android:id="@+id/action_settingsFragment_to_homeFragment"
@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/FavouritesFragment"
-        android:name="com.example.mvvm.view.FavouritesFragment"
+        android:name="com.example.mvvm.favourites.view.FavouritesFragment"
         android:label="fragment_profile">
         <action
             android:id="@+id/action_favouritesFragment_to_mapFragment"
@@ -62,11 +62,11 @@
 
     <fragment
         android:id="@+id/placeDetailsFragment"
-        android:name="com.example.mvvm.view.PlaceDetailsFragment"
+        android:name="com.example.mvvm.favourites.view.PlaceDetailsFragment"
         tools:layout="@layout/fragment_place_details">
         <argument
             android:name="favouritePlace"
-            app:argType="com.example.mvvm.db.FavoritePlaces" />
+            app:argType="com.example.mvvm.weather.model.pojos.FavoritePlaces" />
         <action
             android:id="@+id/action_placeDetailsFragment_to_FavouritesFragment"
             app:destination="@id/FavouritesFragment"
@@ -76,7 +76,7 @@
 
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.mvvm.view.MapFragment"
+        android:name="com.example.mvvm.map.view.MapFragment"
         tools:layout="@layout/fragment_map" >
         <action
             android:id="@+id/action_mapFragment_to_FavouritesFragment"
@@ -84,7 +84,7 @@
     </fragment>
     <fragment
         android:id="@+id/AlertFragment"
-        android:name="com.example.mvvm.view.AlertFragment"
+        android:name="com.example.mvvm.alert.view.AlertFragment"
         android:label="AlertFragment">
         <action
             android:id="@+id/action_myCardFragment_to_homeFragment"
@@ -96,7 +96,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapFragmentSettings2"
-        android:name="com.example.mvvm.view.MapFragmentSettings"
+        android:name="com.example.mvvm.map.view.MapFragmentSettings"
         android:label="MapFragmentSettings" >
         <action
             android:id="@+id/action_mapFragmentSettings2_to_SettingsFragment"
