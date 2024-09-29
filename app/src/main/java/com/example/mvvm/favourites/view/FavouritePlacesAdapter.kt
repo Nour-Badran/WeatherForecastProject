@@ -16,10 +16,8 @@ class FavouritePlacesAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(place: FavoritePlaces, position: Int) {
-            // Set the place name
             binding.placeName.text = place.cityName
 
-            // Handle delete icon click
             binding.deleteIcon.setOnClickListener {
                 onDeleteClick(position)
             }
@@ -30,7 +28,6 @@ class FavouritePlacesAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouritePlaceViewHolder {
-        // Inflate the item layout using ViewBinding
         val binding = ItemFavouritePlaceBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,

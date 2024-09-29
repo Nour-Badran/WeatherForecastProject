@@ -42,11 +42,11 @@ class AlertAdapter(private val onCancelClick: (AlertEntity) -> Unit) :
 
 class AlertDiffUtil : DiffUtil.ItemCallback<AlertEntity>() {
     override fun areItemsTheSame(oldItem: AlertEntity, newItem: AlertEntity): Boolean {
-        return oldItem.id == newItem.id // Assuming 'id' uniquely identifies each AlertEntity
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: AlertEntity, newItem: AlertEntity): Boolean {
-        return oldItem == newItem // Use data class equality check
+        return oldItem == newItem
     }
 }
 

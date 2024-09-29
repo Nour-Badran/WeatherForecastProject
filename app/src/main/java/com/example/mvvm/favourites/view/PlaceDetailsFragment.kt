@@ -78,7 +78,6 @@ class PlaceDetailsFragment : Fragment() {
         observeWeatherData()
         observeDaily()
         observeHourly()
-        // Fetch location and weather data
         binding.swipeRefreshLayout.setOnRefreshListener {
             if (NetworkUtil.isNetworkConnected(requireContext()))
             {

@@ -51,7 +51,7 @@ class FavViewModel(private val repository: IWeatherRepository) : ViewModel() {
     }
     fun addPlace(place: FavoritePlaces) {
         viewModelScope.launch {
-            repository.insertFavoritePlace(place) // Implement this in your repository
+            repository.insertFavoritePlace(place)
             getFavoritePlaces() // Refresh the list
         }
     }
