@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.mvvm.alert.model.AlertEntity
 import com.example.mvvm.weather.model.pojos.FavoritePlaces
 import com.example.mvvm.weather.model.pojos.ForecastEntity
 import com.example.mvvm.weather.model.pojos.WeatherEntity
@@ -39,4 +40,15 @@ interface WeatherDao {
     @Delete
     suspend fun delete(favorite: FavoritePlaces)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAlert(alert: AlertEntity)
+
+    @Query("DELETE FROM alerts WHERE id = :alertId")
+    suspend fun deleteAlertById(alertId: Int)
+
+    @Query("SELECT * FROM alerts WHERE id = :id")
+    suspend fun getAlertById(id: Int): AlertEntity?
+
+    @Query("SELECT * FROM alerts")
+    fun getAllAlerts(): Flow<List<AlertEntity>>
 }

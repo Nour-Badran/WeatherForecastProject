@@ -1,7 +1,7 @@
 package com.example.mvvm.viewmodel
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.mvvm.FakeWeatherRepository
+import com.example.mvvm.repo.FakeWeatherRepository
 import com.example.mvvm.favourites.viewmodel.FavViewModel
 import com.example.mvvm.weather.model.pojos.FavoritePlaces
 import com.example.mvvm.weather.model.repo.IWeatherRepository

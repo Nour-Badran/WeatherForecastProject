@@ -1,9 +1,11 @@
 package com.example.mvvm.weather.model.repo
 
+import com.example.mvvm.weather.model.localdatasource.IWeatherLocalDataSource
 import com.example.mvvm.weather.model.localdatasource.WeatherLocalDataSource
 import com.example.mvvm.weather.model.pojos.FavoritePlaces
 import com.example.mvvm.weather.model.pojos.FiveDayResponse
 import com.example.mvvm.weather.model.pojos.WeatherData
+import com.example.mvvm.weather.model.remotedatasource.IWeatherRemoteDataSource
 import com.example.mvvm.weather.model.remotedatasource.WeatherRemoteDataSource
 import com.example.mvvm.weather.model.utilities.mapToFiveDayResponse
 import kotlinx.coroutines.flow.Flow
@@ -26,8 +28,8 @@ interface IWeatherRepository {
 }
 
 class WeatherRepository(
-    private val localDataSource: WeatherLocalDataSource,
-    private val remoteDataSource: WeatherRemoteDataSource
+    private val localDataSource: IWeatherLocalDataSource,
+    private val remoteDataSource: IWeatherRemoteDataSource
 ) : IWeatherRepository {
     override fun getFavPlaces(): Flow<List<FavoritePlaces>> {
         return localDataSource.getFavPlaces()

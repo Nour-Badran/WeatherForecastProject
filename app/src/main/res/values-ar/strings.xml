@@ -81,5 +81,24 @@
     <string name="weatherAlarm">تنبيه الطقس</string>
     <string name="dismiss">تجاهل</string>
     <string name="weatherStatus">حالة الطقس</string>
-
+    <string name="enter_city_name">أدخل اسم المدينة</string>
+    <string name="start_time">وقت البدء</string>
+    <string name="end_time">وقت الانتهاء</string>
+    <string name="notification">إشعار</string>
+    <string name="alarm">منبه</string>
+    <string name="set_alert">تعيين تنبيه</string>
+    <string name="cancel_alert">إلغاء التنبيه</string>
+    <string name="weather_alert_settings">إعدادات تنبيهات الطقس</string>
+    <string name="alert_type">نوع التنبيه</string>
+    <string name="_12_00">١٢:٠٠</string>
+    <string name="cancel">إلغاء</string>
+    <string name="alerts">المنبهات</string>
+    <string name="weather_alert_title">تنبيه الطقس في %1$s</string>
+    <string name="weather_alert_content">الحالة: %1$s، درجة الحرارة: %2$s</string>
+    <string name="please_select_alert_type">يرجى اختيار نوع التنبيه</string>
+    <string name="overlay_permission_denied">تم رفض إذن التراكب</string>
+    <string name="selected_time_passed">الوقت المحدد قد مضى. يرجى اختيار وقت في المستقبل.</string>
+    <string name="end_time_after_start_time">يجب أن يكون وقت النهاية بعد وقت البداية. يرجى تعديل وقت النهاية.</string>
+    <string name="alert_canceled">تم إلغاء التنبيه</string>
+    <string name="alert_set_for">تم ضبط التنبيه على %1$s:%2$s</string>
 </resources>

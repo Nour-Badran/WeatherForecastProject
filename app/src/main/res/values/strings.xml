@@ -81,4 +81,24 @@
     <string name="weatherAlarm">Weather Alarm</string>
     <string name="dismiss">Dismiss</string>
     <string name="weatherStatus">"Weather Status "</string>
+    <string name="enter_city_name">Enter city name</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="notification">Notification</string>
+    <string name="alarm">Alarm</string>
+    <string name="set_alert">Set Alert</string>
+    <string name="cancel_alert">Cancel Alert</string>
+    <string name="weather_alert_settings">Weather Alert Settings</string>
+    <string name="alert_type">Alert Type</string>
+    <string name="_12_00">12:00</string>
+    <string name="cancel">Cancel</string>
+    <string name="alerts">Alerts</string>
+    <string name="weather_alert_title">Weather Alert in %1$s</string>
+    <string name="weather_alert_content">Status: %1$s, Temperature: %2$s</string>
+    <string name="please_select_alert_type">Please select an alert type</string>
+    <string name="overlay_permission_denied">Overlay permission denied</string>
+    <string name="selected_time_passed">Selected time has already passed. Please choose a future time.</string>
+    <string name="end_time_after_start_time">End time must be after the start time. Please adjust the end time.</string>
+    <string name="alert_canceled">Alert canceled</string>
+    <string name="alert_set_for">Alert set for %1$s:%2$s</string>
 </resources>

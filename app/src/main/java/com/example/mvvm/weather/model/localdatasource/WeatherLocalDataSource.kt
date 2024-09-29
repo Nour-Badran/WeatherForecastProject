@@ -12,16 +12,29 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
+interface IWeatherLocalDataSource {
+    suspend fun saveWeatherData(weatherData: WeatherData)
 
-    suspend fun saveWeatherData(weatherData: WeatherData) {
+    suspend fun saveForecastData(forecast: FiveDayResponse)
+    fun getWeatherData(): Flow<WeatherData>
+    fun getForecastData(): Flow<List<ForecastEntity>>
+    fun getFavPlaces(): Flow<List<FavoritePlaces>>
+
+    suspend fun insertPlace(place: FavoritePlaces)
+
+    suspend fun deletePlace(place: FavoritePlaces)
+}
+
+class WeatherLocalDataSource(private val weatherDao: WeatherDao) : IWeatherLocalDataSource {
+
+    override suspend fun saveWeatherData(weatherData: WeatherData) {
         withContext(Dispatchers.IO) {
             weatherDao.deleteAllWeatherData()
             weatherDao.insertWeatherData(weatherData.toEntity())
         }
     }
 
-    suspend fun saveForecastData(forecast: FiveDayResponse) {
+    override suspend fun saveForecastData(forecast: FiveDayResponse) {
         withContext(Dispatchers.IO) {
             weatherDao.deleteAllForecastData()
             val forecastEntities = forecast.list.map { it.toEntity() }
@@ -29,23 +42,23 @@ class WeatherLocalDataSource(private val weatherDao: WeatherDao) {
         }
     }
 
-    fun getWeatherData(): Flow<WeatherData> {
+    override fun getWeatherData(): Flow<WeatherData> {
         return weatherDao.getWeatherData().map { it.toModel() }
     }
 
-    fun getForecastData(): Flow<List<ForecastEntity>> {
+    override fun getForecastData(): Flow<List<ForecastEntity>> {
         return weatherDao.getForecastData()
     }
 
-    fun getFavPlaces(): Flow<List<FavoritePlaces>> {
+    override fun getFavPlaces(): Flow<List<FavoritePlaces>> {
         return weatherDao.getAll()
     }
 
-    suspend fun insertPlace(place: FavoritePlaces) {
+    override suspend fun insertPlace(place: FavoritePlaces) {
         weatherDao.insert(place)
     }
 
-    suspend fun deletePlace(place: FavoritePlaces) {
+    override suspend fun deletePlace(place: FavoritePlaces) {
         weatherDao.delete(place)
     }
 }

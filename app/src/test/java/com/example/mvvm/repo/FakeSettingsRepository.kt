@@ -1,4 +1,4 @@
-package com.example.mvvm
+package com.example.mvvm.repo
 
 import com.example.mvvm.settings.model.ISettingsRepository
 
