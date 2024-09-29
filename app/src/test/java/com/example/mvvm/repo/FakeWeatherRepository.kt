@@ -1,4 +1,4 @@
-package com.example.mvvm
+package com.example.mvvm.repo
 import com.example.mvvm.weather.model.pojos.FavoritePlaces
 import com.example.mvvm.weather.model.pojos.FiveDayResponse
 import com.example.mvvm.weather.model.repo.IWeatherRepository

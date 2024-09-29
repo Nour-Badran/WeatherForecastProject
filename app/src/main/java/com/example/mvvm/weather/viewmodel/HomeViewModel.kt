@@ -107,9 +107,11 @@ class HomeViewModel(
                                     mapHourlyWeatherForTodayAndTomorrow(localForecastData)
                                 )
                             }
+                    } else {
+                        _dailyWeather.value = ApiState.Error(Throwable("Failed to fetch weather data and no local data available"))
+                        _hourlyWeather.value = ApiState.Error(Throwable("Failed to fetch weather data and no local data available"))
                     }
-                    _dailyWeather.value = ApiState.Error(Throwable("Failed to fetch weather data and no local data available"))
-                    _hourlyWeather.value = ApiState.Error(Throwable("Failed to fetch weather data and no local data available"))
+
                 }
             } catch (e: Exception) {
                 _dailyWeather.value = ApiState.Error(e)

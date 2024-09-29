@@ -134,6 +134,7 @@ class HomeFragment : Fragment() {
             getCurrentLocation { lat, lon ->
                 if (lat != null && lon != null) {
                     fetchWeatherAndForecast(lat, lon)
+                    settingsViewModel.setLatLon(lat, lon)
                 } else {
                     Toast.makeText(requireContext(), R.string.unable, Toast.LENGTH_SHORT).show()
                 }

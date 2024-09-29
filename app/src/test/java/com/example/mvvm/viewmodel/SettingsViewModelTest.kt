@@ -1,7 +1,7 @@
 package com.example.mvvm.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.mvvm.FakeSettingsRepository
+import com.example.mvvm.repo.FakeSettingsRepository
 import com.example.mvvm.settings.model.ISettingsRepository
 import com.example.mvvm.settings.viewmodel.SettingsViewModel
 import junit.framework.TestCase.assertEquals

@@ -43,8 +43,6 @@ class MapFragment : Fragment() {
     private lateinit var adapter: ArrayAdapter<String>
     private var searchJob: Job? = null
     private var previousQuery: String? = null
-
-    // Use ViewModel
     private lateinit var viewModel: MapViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,18 +81,39 @@ class MapFragment : Fragment() {
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         citySearch.setAdapter(adapter)
 
+        setupSearch()
+
+        val mapEventsReceiver = object : MapEventsReceiver {
+            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+                p?.let { addMarker(it, getString(R.string.unknown_location)) }
+                return true
+            }
+
+            override fun longPressHelper(p: GeoPoint?): Boolean {
+                return false
+            }
+        }
+
+        val mapEventsOverlay = MapEventsOverlay(mapEventsReceiver)
+        mapView.overlays.add(mapEventsOverlay)
+
+        return view
+    }
+
+    private fun setupSearch() {
         citySearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.isNullOrEmpty()) {
                     adapter.clear()
-                    adapter.notifyDataSetChanged()
-                } else if (s.toString() != previousQuery) {
+                    return
+                }
+                if (s.toString() != previousQuery) {
                     previousQuery = s.toString()
                     searchJob?.cancel()
                     searchJob = lifecycleScope.launch {
-                        delay(500)
+                        delay(500) // Debounce delay
                         fetchLocationSuggestions(s.toString())
                     }
                 }
@@ -114,27 +133,14 @@ class MapFragment : Fragment() {
                 }
             }
         }
-
-        val mapEventsReceiver = object : MapEventsReceiver {
-            override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-                p?.let { addMarker(it, getString(R.string.unknown_location)) }
-                return true
-            }
-
-            override fun longPressHelper(p: GeoPoint?): Boolean {
-                return false
-            }
-        }
-
-        val mapEventsOverlay = MapEventsOverlay(mapEventsReceiver)
-        mapView.overlays.add(mapEventsOverlay)
-
-        return view
     }
 
     private fun fetchLocationSuggestions(query: String) {
         lifecycleScope.launch {
             viewModel.fetchLocationSuggestions(query).collect { suggestions ->
+                if (suggestions.isEmpty()) {
+                    Toast.makeText(requireContext(), R.string.error_fetching_suggestions, Toast.LENGTH_SHORT).show()
+                }
                 adapter.clear()
                 adapter.addAll(suggestions)
                 adapter.notifyDataSetChanged()

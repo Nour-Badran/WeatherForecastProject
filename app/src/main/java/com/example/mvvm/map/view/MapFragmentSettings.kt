@@ -61,7 +61,6 @@ class MapFragmentSettings : Fragment() {
             }
         })
         Configuration.getInstance().load(requireContext(), requireContext().getSharedPreferences("osmdroid", 0))
-
     }
 
     override fun onCreateView(
@@ -86,38 +85,8 @@ class MapFragmentSettings : Fragment() {
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         citySearch.setAdapter(adapter)
 
-        citySearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        setupSearch()
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.isNullOrEmpty()) {
-                    adapter.clear()
-                    adapter.notifyDataSetChanged()
-                } else if (s.toString() != previousQuery) {
-                    previousQuery = s.toString()
-                    searchJob?.cancel()
-                    searchJob = lifecycleScope.launch {
-                        delay(500)
-                        fetchLocationSuggestions(s.toString())
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-
-        citySearch.setOnItemClickListener { parent, _, position, _ ->
-            val selectedCity = parent.getItemAtPosition(position).toString()
-            getLocationFromCityName(selectedCity) { location ->
-                if (location != null) {
-                    addMarker(location, selectedCity)
-                    mapView.controller.animateTo(location)
-                } else {
-                    Toast.makeText(requireContext(), R.string.location_not_found, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
         val mapEventsReceiver = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
                 p?.let { addMarker(it, getString(R.string.unknown_location)) }
@@ -136,9 +105,47 @@ class MapFragmentSettings : Fragment() {
 
         return view
     }
+    private fun setupSearch() {
+        citySearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.isNullOrEmpty()) {
+                    adapter.clear()
+                    return
+                }
+                if (s.toString() != previousQuery) {
+                    previousQuery = s.toString()
+                    searchJob?.cancel()
+                    searchJob = lifecycleScope.launch {
+                        delay(500) // Debounce delay
+                        fetchLocationSuggestions(s.toString())
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        citySearch.setOnItemClickListener { parent, _, position, _ ->
+            val selectedCity = parent.getItemAtPosition(position).toString()
+            getLocationFromCityName(selectedCity) { location ->
+                if (location != null) {
+                    addMarker(location, selectedCity)
+                    mapView.controller.animateTo(location)
+                } else {
+                    Toast.makeText(requireContext(), R.string.location_not_found, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     private fun fetchLocationSuggestions(query: String) {
         lifecycleScope.launch {
             viewModel.fetchLocationSuggestions(query).collect { suggestions ->
+                if (suggestions.isEmpty()) {
+                    Toast.makeText(requireContext(), R.string.error_fetching_suggestions, Toast.LENGTH_SHORT).show()
+                }
                 adapter.clear()
                 adapter.addAll(suggestions)
                 adapter.notifyDataSetChanged()

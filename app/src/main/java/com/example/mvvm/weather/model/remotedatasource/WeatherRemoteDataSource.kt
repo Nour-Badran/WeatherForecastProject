@@ -9,7 +9,25 @@ import kotlinx.coroutines.flow.flow
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class WeatherRemoteDataSource {
+interface IWeatherRemoteDataSource {
+    fun fetchWeatherData(
+        lat: Double,
+        lon: Double,
+        apiKey: String,
+        units: String,
+        lang: String? = null
+   ): Flow<WeatherData?>
+
+    fun fetchForecast(
+        lat: Double,
+        lon: Double,
+        apiKey: String,
+        units: String,
+        lang: String? = null
+  ): Flow<FiveDayResponse?>
+}
+
+class WeatherRemoteDataSource : IWeatherRemoteDataSource {
 
     private val weatherService: WeatherService
 
@@ -22,13 +40,13 @@ class WeatherRemoteDataSource {
         weatherService = retrofit.create(WeatherService::class.java)
     }
 
-     fun fetchWeatherData(
+     override fun fetchWeatherData(
         lat: Double,
         lon: Double,
         apiKey: String,
         units: String,
-        lang: String? = null
-    ): Flow<WeatherData?> {
+        lang: String?
+     ): Flow<WeatherData?> {
         return flow {
             val response = weatherService.getWeatherLatLong(lat, lon, apiKey, units, lang)
             if (response.isSuccessful) {
@@ -42,13 +60,13 @@ class WeatherRemoteDataSource {
         }
     }
 
-     fun fetchForecast(
+     override fun fetchForecast(
         lat: Double,
         lon: Double,
         apiKey: String,
         units: String,
-        lang: String? = null
-    ): Flow<FiveDayResponse?> {
+        lang: String?
+     ): Flow<FiveDayResponse?> {
         return flow {
             val response = weatherService.get5DayForecast(lat, lon,apiKey,  units,lang)
             if (response.isSuccessful) {
