@@ -70,6 +70,7 @@ class AlertFragment : Fragment() {
                         is ApiState.Loading->{}
                         is ApiState.Success->{
                             alertAdapter.submitList(alerts.data)
+                            //updateUI(alerts.data.isEmpty())
                         }
                         else ->{}
                     }
@@ -111,6 +112,7 @@ class AlertFragment : Fragment() {
     private fun setupRecyclerView() {
         alertAdapter = AlertAdapter { alert ->
             cancelAlert(alert)
+            //updateUi()
         }
 
         binding.recyclerViewAlerts.apply {
@@ -240,4 +242,13 @@ class AlertFragment : Fragment() {
         viewModel.cancelAlert(pendingIntent, alert.id)
         Toast.makeText(requireContext(), R.string.alert_canceled, Toast.LENGTH_SHORT).show()
     }
+//    private fun updateUI(isListEmpty: Boolean) {
+//        if (isListEmpty) {
+//            binding.recyclerViewAlerts.visibility= View.GONE
+//            binding.emptyView.visibility = View.VISIBLE
+//        } else {
+//            binding.recyclerViewAlerts.visibility = View.VISIBLE
+//            binding.emptyView.visibility = View.GONE
+//        }
+//    }
 }

@@ -30,7 +30,7 @@ class AlertAdapter(private val onCancelClick: (AlertEntity) -> Unit) :
             binding.tvAlertType.text = if (currentLanguage == "ar") {
                 if (alert.alertType == "ALARM") "منبه" else "إشعار"
             } else {
-                alert.alertType
+                if (alert.alertType == "ALARM") "Alarm" else "Notification"
             }
             binding.tvAlertTime.text = String.format("%02d:%02d", alert.hour, alert.minute)
             binding.btnCancel.setOnClickListener {
