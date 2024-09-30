@@ -13,7 +13,7 @@ interface WeatherService {
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
         @Query("units") units: String,
-        @Query("lang") lang: String? = null // Optional language parameter
+        @Query("lang") lang: String? = null
     ): Response<WeatherApiResponse>
 
     @GET("data/2.5/forecast")
@@ -22,7 +22,7 @@ interface WeatherService {
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
         @Query("units") units: String,
-        @Query("lang") lang: String? = null // Optional language parameter
+        @Query("lang") lang: String? = null
     ): Response<FiveDayResponse>
 }
 

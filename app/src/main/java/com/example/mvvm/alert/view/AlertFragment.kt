@@ -194,9 +194,12 @@ class AlertFragment : Fragment() {
             isActive = true
         )
 
+        val delay = endTimeCalendar.timeInMillis - calendar.timeInMillis
+
         val intent = Intent(requireContext(), AlarmReceiver::class.java).apply {
             putExtra("ALERT_TYPE", alertType)
             putExtra("ID", alert.id)
+            putExtra("DELAY", delay)
         }
 
         val pendingIntent = PendingIntent.getBroadcast(

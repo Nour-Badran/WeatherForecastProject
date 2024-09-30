@@ -47,7 +47,7 @@ class AlarmReceiver : BroadcastReceiver() {
     private lateinit var weatherDao: WeatherDao
     private lateinit var viewModel: AlertViewModel
     private lateinit var repository: AlertRepository
-
+    private var delay = 60000L  // standard 1 min
     override fun onReceive(context: Context, intent: Intent) {
         val settingsLocalDataSource = SettingsLocalDataSource(context)
         val settingsRepository = SettingsRepository(settingsLocalDataSource)
@@ -57,6 +57,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val alertType = intent.getStringExtra("ALERT_TYPE")
         val id = intent.getIntExtra("ID",0)
+        delay = intent.getLongExtra("DELAY", 60000)
 
         weatherDao = WeatherDatabase.getDatabase(context).weatherDao()
 
@@ -176,7 +177,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                delay(60000)
+                delay(delay)
                 withContext(Dispatchers.Main) {
                     if (dialog.isShowing) {
                         dialog.dismiss()

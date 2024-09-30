@@ -30,13 +30,11 @@ class SettingsFragment : Fragment(), Refreshable {
     ): View {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
 
-        // Initialize the repository
         repository = SettingsRepository(SettingsLocalDataSource(requireContext()))
-        // Initialize the ViewModel using the factory
+
         val factory = SettingsViewModelFactory(repository)
         viewModel = ViewModelProvider(requireActivity(), factory).get(SettingsViewModel::class.java)
 
-        // Observe ViewModel LiveData and set up listeners for UI components
         setupObservers()
 
         return binding.root
@@ -59,7 +57,6 @@ class SettingsFragment : Fragment(), Refreshable {
             setDefaultSelection(binding.temperatureRadioGroup, temperature, viewModel.getTemperatureId())
         }
 
-        // Set listeners for UI components
         binding.locationRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             if (!isInitialLoad) {
                 val selectedButton = binding.root.findViewById<RadioButton>(checkedId)
@@ -95,9 +92,8 @@ class SettingsFragment : Fragment(), Refreshable {
             viewModel.setNotificationsEnabled(isChecked)
         }
 
-        // Set isInitialLoad to false after all default selections are made
         binding.root.post {
-            isInitialLoad = false  // This ensures the flag is reset after the initial setup
+            isInitialLoad = false
         }
     }
 
