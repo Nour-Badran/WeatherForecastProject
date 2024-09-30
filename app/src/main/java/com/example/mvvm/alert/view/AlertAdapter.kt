@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvm.alert.model.AlertEntity
 import com.example.mvvm.databinding.ItemAlertBinding
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 class AlertAdapter(private val onCancelClick: (AlertEntity) -> Unit) :
@@ -32,7 +34,17 @@ class AlertAdapter(private val onCancelClick: (AlertEntity) -> Unit) :
             } else {
                 if (alert.alertType == "ALARM") "Alarm" else "Notification"
             }
-            binding.tvAlertTime.text = String.format("%02d:%02d", alert.hour, alert.minute)
+            val calendar = Calendar.getInstance().apply {
+                set(alert.year, alert.month, alert.day, alert.hour, alert.minute)
+            }
+            val dateFormat = if (currentLanguage == "ar") {
+                SimpleDateFormat("   yyyy/MM/dd    HH:mm", Locale("ar"))
+            } else {
+                SimpleDateFormat("   dd/MM/yyyy    HH:mm", Locale.getDefault())
+            }
+
+            binding.tvAlertTime.text = dateFormat.format(calendar.time)
+
             binding.btnCancel.setOnClickListener {
                 onCancelClick(alert)
             }

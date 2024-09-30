@@ -20,7 +20,7 @@
         android:layout_weight="1"
         android:text="@string/alert_type"
         android:textColor="@android:color/black"
-        android:textSize="24sp" />
+        android:textSize="22sp" />
 
     <!-- Alert Time TextView -->
     <TextView
@@ -30,7 +30,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/_12_00"
         android:textColor="@android:color/black"
-        android:textSize="24sp" />
+        android:textSize="20sp" />
 
     <!-- Cancel Button -->
     <Button

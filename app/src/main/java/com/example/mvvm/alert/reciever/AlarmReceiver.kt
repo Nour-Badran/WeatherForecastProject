@@ -69,21 +69,24 @@ class AlarmReceiver : BroadcastReceiver() {
             viewModel.deleteAlert(id)
         }
 
-        if (alertType == "ALARM") {
-            val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-            ringtone = RingtoneManager.getRingtone(context, alarmSound)
-            ringtone.play()
+        if(settingsViewModel.notificationsEnabled.value==true)
+        {
+            if (alertType == "ALARM") {
+                val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                ringtone = RingtoneManager.getRingtone(context, alarmSound)
+                ringtone.play()
 
-            CoroutineScope(Dispatchers.IO).launch {
-                val (triple, cityName) = getAlertWeatherStatusFromApi(context, latitude, longitude)
-                val (status, temperature, iconUrl) = triple
+                CoroutineScope(Dispatchers.IO).launch {
+                    val (triple, cityName) = getAlertWeatherStatusFromApi(context, latitude, longitude)
+                    val (status, temperature, iconUrl) = triple
 
-                withContext(Dispatchers.Main) {
-                    createAlertDialog(context, status, cityName, temperature, iconUrl)
+                    withContext(Dispatchers.Main) {
+                        createAlertDialog(context, status, cityName, temperature, iconUrl)
+                    }
                 }
+            } else if (alertType == "NOTIFICATION") {
+                showNotification(context)
             }
-        } else if (alertType == "NOTIFICATION") {
-            showNotification(context)
         }
     }
 

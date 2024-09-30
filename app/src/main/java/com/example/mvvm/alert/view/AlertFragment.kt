@@ -24,6 +24,10 @@ import com.example.mvvm.alert.model.AlertRepository
 import com.example.mvvm.alert.AlertViewModel.AlertViewModel
 import com.example.mvvm.alert.AlertViewModel.AlertViewModelFactory
 import com.example.mvvm.databinding.FragmentAlertBinding
+import com.example.mvvm.settings.model.SettingsLocalDataSource
+import com.example.mvvm.settings.model.SettingsRepository
+import com.example.mvvm.settings.viewmodel.SettingsViewModel
+import com.example.mvvm.settings.viewmodel.SettingsViewModelFactory
 import com.example.mvvm.weather.model.db.WeatherDatabase
 import com.example.mvvm.weather.viewmodel.ApiState
 import kotlinx.coroutines.launch
@@ -40,6 +44,9 @@ class AlertFragment : Fragment() {
     private lateinit var database: WeatherDatabase
     private lateinit var viewModel: AlertViewModel
 
+    private lateinit var settingsViewModel: SettingsViewModel
+    private lateinit var repository: SettingsRepository
+
     private lateinit var alertAdapter: AlertAdapter
 
     override fun onCreateView(
@@ -48,6 +55,11 @@ class AlertFragment : Fragment() {
     ): View {
         binding = FragmentAlertBinding.inflate(inflater, container, false)
         binding.datePicker.minDate = System.currentTimeMillis() - 1000
+
+        repository = SettingsRepository(SettingsLocalDataSource(requireContext()))
+
+        val settingsViewModelFactory = SettingsViewModelFactory(repository)
+        settingsViewModel = ViewModelProvider(requireActivity(), settingsViewModelFactory).get(SettingsViewModel::class.java)
 
         database = WeatherDatabase.getDatabase(requireContext())
 
@@ -82,10 +94,15 @@ class AlertFragment : Fragment() {
             val selectedAlertType = view.findViewById<RadioButton>(binding.radioGroupAlertType.checkedRadioButtonId)
 
             if (selectedAlertType != null) {
-                if (selectedAlertType.text.toString() == "Alarm" || selectedAlertType.text.toString() == "منبه") {
-                    requestOverlayPermission()
+                // Check if notifications are enabled before setting the alert
+                if (settingsViewModel.notificationsEnabled.value == true) {
+                    if (selectedAlertType.text.toString() == "Alarm" || selectedAlertType.text.toString() == "منبه") {
+                        requestOverlayPermission()
+                    } else {
+                        setAlert("NOTIFICATION")
+                    }
                 } else {
-                    setAlert("NOTIFICATION")
+                    Toast.makeText(requireContext(), R.string.enable_notifications_in_settings, Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(requireContext(), R.string.please_select_alert_type, Toast.LENGTH_SHORT).show()
@@ -174,7 +191,7 @@ class AlertFragment : Fragment() {
             )
         }
 
-        if (endTimeCalendar.timeInMillis <= calendar.timeInMillis) {
+        if (alertType=="ALARM" && endTimeCalendar.timeInMillis <= calendar.timeInMillis) {
             Toast.makeText(
                 requireContext(),
                 R.string.end_time_after_start_time,
