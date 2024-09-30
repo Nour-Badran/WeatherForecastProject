@@ -57,6 +57,12 @@ class SettingsFragment : Fragment(), Refreshable {
             setDefaultSelection(binding.temperatureRadioGroup, temperature, viewModel.getTemperatureId())
         }
 
+        viewModel.notificationsEnabled.observe(viewLifecycleOwner) { isEnabled ->
+            if (isInitialLoad) {
+                binding.notificationsSwitch.isChecked = isEnabled
+            }
+        }
+
         binding.locationRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             if (!isInitialLoad) {
                 val selectedButton = binding.root.findViewById<RadioButton>(checkedId)
