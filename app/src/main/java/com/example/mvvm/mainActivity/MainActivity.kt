@@ -69,11 +69,10 @@ class MainActivity : AppCompatActivity(), OnLocationSelectedListener {
 
     }
 
-    // Update locale only if the new language is different
     private fun updateLocaleIfNeeded(newLanguage: String) {
         if (currentLanguage != newLanguage) {
             setLocale(newLanguage)
-            currentLanguage = newLanguage // Update the current language
+            currentLanguage = newLanguage
         }
     }
 
@@ -92,12 +91,6 @@ class MainActivity : AppCompatActivity(), OnLocationSelectedListener {
 
         resources.updateConfiguration(config, resources.displayMetrics)
 
-        // Notify fragments to refresh their UI with the new locale
-        supportFragmentManager.fragments.forEach { fragment ->
-            if (fragment is Refreshable) {
-                fragment.refresh()
-            }
-        }
         if (db.root.layoutDirection == View.LAYOUT_DIRECTION_LTR) {
             db.root.layoutDirection = View.LAYOUT_DIRECTION_RTL
         } else {
@@ -113,6 +106,6 @@ class MainActivity : AppCompatActivity(), OnLocationSelectedListener {
     }
 
     override fun onLocationSelected(locationName: FavoritePlaces) {
-        viewModel.addPlace(locationName) // You should implement this method in the ViewModel
+        viewModel.addPlace(locationName)
     }
 }

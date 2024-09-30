@@ -42,7 +42,7 @@ class MapFragmentSettings : Fragment() {
     private lateinit var citySearch: AutoCompleteTextView
     private lateinit var settingViewModel: SettingsViewModel
     private lateinit var repository: SettingsRepository
-    private var currentMarker: Marker? = null // Property to hold the current marker
+    private var currentMarker: Marker? = null
     private lateinit var geocoder: Geocoder
     private lateinit var adapter: ArrayAdapter<String>
     private var searchJob: Job? = null
@@ -56,7 +56,6 @@ class MapFragmentSettings : Fragment() {
         settingViewModel = ViewModelProvider(this, factory).get(SettingsViewModel::class.java)
         requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                //viewModel.updateLocation("MAP", R.id.mapFragment)
                 findNavController().navigate(R.id.action_mapFragmentSettings2_to_SettingsFragment)
             }
         })
@@ -67,7 +66,6 @@ class MapFragmentSettings : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_map_settings, container, false)
         mapView = view.findViewById(R.id.map)
         citySearch = view.findViewById(R.id.city_search)
@@ -79,6 +77,7 @@ class MapFragmentSettings : Fragment() {
         mapView.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(true)
         mapView.controller.setZoom(16.0)
+
         mapView.controller.setCenter(GeoPoint(30.054205, 30.939972)) // Default center at Giza
 
         // Set up AutoCompleteTextView with dynamic location suggestions
@@ -94,7 +93,6 @@ class MapFragmentSettings : Fragment() {
             }
 
             override fun longPressHelper(p: GeoPoint?): Boolean {
-                // Handle long press if needed
                 return false
             }
         }

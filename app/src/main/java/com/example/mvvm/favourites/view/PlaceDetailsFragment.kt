@@ -29,7 +29,7 @@ import com.example.mvvm.weather.viewmodel.HomeViewModelFactory
 import com.example.mvvm.settings.viewmodel.SettingsViewModel
 import com.example.mvvm.settings.viewmodel.SettingsViewModelFactory
 import com.example.mvvm.weather.view.HourlyForecastAdapter
-import com.example.mvvm.weather.view.WeatherForecastAdapter
+import com.example.mvvm.weather.view.DailyForecastAdapter
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -42,7 +42,7 @@ class PlaceDetailsFragment : Fragment() {
     lateinit var binding: FragmentPlaceDetailsBinding
     private lateinit var viewModel: HomeViewModel
     private lateinit var settingsViewModel: SettingsViewModel
-    private lateinit var forecastAdapter: WeatherForecastAdapter
+    private lateinit var forecastAdapter: DailyForecastAdapter
     private lateinit var hourlyAdapter: HourlyForecastAdapter
     private var selectedLanguage: String = "en"
     private var selectedTemp: String = "metric"
@@ -155,7 +155,7 @@ class PlaceDetailsFragment : Fragment() {
             R.id.fahrenheit_radio_button -> "imperial"
             else -> "null"
         }
-        forecastAdapter = WeatherForecastAdapter(selectedLanguage,selectedTemp)
+        forecastAdapter = DailyForecastAdapter(selectedLanguage,selectedTemp)
         binding.rvDailyForecast.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = forecastAdapter

@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
     lateinit var binding: HomeFragmentBinding
     private lateinit var viewModel: HomeViewModel
     private lateinit var settingsViewModel: SettingsViewModel
-    private lateinit var forecastAdapter: WeatherForecastAdapter
+    private lateinit var forecastAdapter: DailyForecastAdapter
     private lateinit var hourlyAdapter: HourlyForecastAdapter
     private var selectedLanguage: String = "en"
     private var selectedTemp: String = "metric"
@@ -206,7 +206,7 @@ class HomeFragment : Fragment() {
             R.id.fahrenheit_radio_button -> "imperial"
             else -> "null"
         }
-        forecastAdapter = WeatherForecastAdapter(selectedLanguage,selectedTemp)
+        forecastAdapter = DailyForecastAdapter(selectedLanguage,selectedTemp)
         binding.rvDailyForecast.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = forecastAdapter

@@ -18,11 +18,8 @@ class MapViewModel : ViewModel() {
             }
             if (response.isSuccessful) {
                 response.body()?.map { it.display_name }?.let { suggestions.addAll(it) }
-            } else {
-                // Log the error or handle it accordingly
             }
         } catch (e: Exception) {
-            // Log the error
             e.printStackTrace()
         }
         emit(suggestions)

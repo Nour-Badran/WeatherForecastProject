@@ -50,13 +50,12 @@ class WeatherRemoteDataSource : IWeatherRemoteDataSource {
         return flow {
             val response = weatherService.getWeatherLatLong(lat, lon, apiKey, units, lang)
             if (response.isSuccessful) {
-                // Emit the mapped weather data
                 emit(response.body()?.let { mapToWeatherData(it) })
             } else {
-                emit(null) // Emit null if the response is not successful
+                emit(null)
             }
         }.catch {
-            emit(null) // Handle any exceptions and emit null
+            emit(null)
         }
     }
 

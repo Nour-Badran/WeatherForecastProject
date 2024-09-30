@@ -31,6 +31,7 @@ class WeatherRepository(
     private val localDataSource: IWeatherLocalDataSource,
     private val remoteDataSource: IWeatherRemoteDataSource
 ) : IWeatherRepository {
+
     override fun getFavPlaces(): Flow<List<FavoritePlaces>> {
         return localDataSource.getFavPlaces()
     }

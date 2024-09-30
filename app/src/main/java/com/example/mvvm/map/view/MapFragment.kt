@@ -77,7 +77,6 @@ class MapFragment : Fragment() {
         mapView.controller.setZoom(16.0)
         mapView.controller.setCenter(GeoPoint(30.054205, 30.939972))
 
-        // Set up AutoCompleteTextView with dynamic location suggestions
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf())
         citySearch.setAdapter(adapter)
 

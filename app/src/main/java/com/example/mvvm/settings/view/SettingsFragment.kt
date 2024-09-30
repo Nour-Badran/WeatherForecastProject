@@ -11,13 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.mvvm.R
 import com.example.mvvm.databinding.FragmentSettingsBinding
-import com.example.mvvm.mainActivity.Refreshable
 import com.example.mvvm.settings.viewmodel.SettingsViewModel
 import com.example.mvvm.settings.viewmodel.SettingsViewModelFactory
 import com.example.mvvm.settings.model.SettingsLocalDataSource
 import com.example.mvvm.settings.model.SettingsRepository
 
-class SettingsFragment : Fragment(), Refreshable {
+class SettingsFragment : Fragment() {
 
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var viewModel: SettingsViewModel
@@ -151,10 +150,6 @@ class SettingsFragment : Fragment(), Refreshable {
                 binding.root.layoutDirection = View.LAYOUT_DIRECTION_RTL
             }
         }
-    }
-
-    override fun refresh() {
-
     }
 }
 

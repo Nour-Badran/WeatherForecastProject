@@ -16,8 +16,8 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class WeatherForecastAdapter(private val selectedLanguage: String,private val selectedTemp: String) :
-    ListAdapter<DailyWeather, WeatherForecastAdapter.WeatherViewHolder>(ForecastDiffCallback()) {
+class DailyForecastAdapter(private val selectedLanguage: String, private val selectedTemp: String) :
+    ListAdapter<DailyWeather, DailyForecastAdapter.WeatherViewHolder>(ForecastDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
         val view = LayoutInflater.from(parent.context)
