@@ -151,6 +151,16 @@ class AlarmReceiver : BroadcastReceiver() {
         val weatherIcon = dialogView.findViewById<ImageView>(R.id.iv_weather_icon)
         val dismissButton = dialogView.findViewById<Button>(R.id.dismiss_alarm_button)
 
+        val selectedLanguageId = settingsViewModel.getLanguageId()
+        val selectedLanguage = when (selectedLanguageId) {
+            R.id.arabic_radio_button -> "ar"
+            R.id.english_radio_button -> "en"
+            else -> "null"
+        }
+        if(selectedLanguage == "ar")
+        {
+            dismissButton.text = "تجاهل"
+        }
         weatherCity.text = zoneName
         weatherStatusTextView.text = weatherStatus
         weatherTemperature.text = temperature
