@@ -206,13 +206,27 @@ class AlarmReceiver : BroadcastReceiver() {
         lat: Double,
         lon: Double
     ): Pair<Triple<String, String, Int?>, String?> {
+
+        val selectedTempId = settingsViewModel.getTemperatureId()
+        val selectedTemp = when (selectedTempId) {
+            R.id.celsius_radio_button -> "metric"
+            R.id.kelvin_radio_button -> "standard"
+            R.id.fahrenheit_radio_button -> "imperial"
+            else -> "null"
+        }
+
+        val temperatureUnit = when (selectedTemp) {
+            "metric" -> "C"
+            "imperial" -> "F"
+            "standard" -> "K"
+            else -> "C"
+        }
         if (!isConnectedToInternet(context)) {
             val localDataSource = WeatherLocalDataSource(WeatherDatabase.getDatabase(context).weatherDao())
             val weatherData = localDataSource.getWeatherData().first()
 
             val description = weatherData.description
             val temperature = NumberFormat.getInstance(Locale.ENGLISH).format(weatherData.temperature.toInt())
-            val temperatureUnit = "C"
             val cityName = weatherData.cityName
             val icon = setIcon(weatherData.icon)
             return Pair(Triple(description, "$temperature°$temperatureUnit", icon), cityName)
@@ -225,13 +239,6 @@ class AlarmReceiver : BroadcastReceiver() {
             else -> "null"
         }
 
-        val selectedTempId = settingsViewModel.getTemperatureId()
-        val selectedTemp = when (selectedTempId) {
-            R.id.celsius_radio_button -> "metric"
-            R.id.kelvin_radio_button -> "standard"
-            R.id.fahrenheit_radio_button -> "imperial"
-            else -> "null"
-        }
 
         val data = WeatherRemoteDataSource().fetchWeatherData(
             lat, lon, "477840c0a8b416725948f965ee5450ec", selectedTemp, selectedLanguage
@@ -247,12 +254,7 @@ class AlarmReceiver : BroadcastReceiver() {
             NumberFormat.getInstance(if (selectedLanguage == "ar") Locale("ar") else Locale.ENGLISH).format(it)
         } ?: "N/A"
 
-        val temperatureUnit = when (selectedTemp) {
-            "metric" -> "C"
-            "imperial" -> "F"
-            "standard" -> "K"
-            else -> "C"
-        }
+
 
         val cityName = data.first()?.cityName ?: "Unknown Location"
         val temp = "$formattedTemperature°$temperatureUnit"
